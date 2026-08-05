@@ -113,6 +113,12 @@ public final class ModGameTests {
                 "a fully charged disc should launch faster than a quick throw"
         );
         helper.assertValueEqual(IdentityDiscItem.getChargeProgress(IdentityDiscItem.FULL_THROW_CHARGE_TICKS), 1.0F, "full throw charge");
+        helper.assertTrue(
+                IdentityDiscProjectile.getImpactDamage(0.0F) < IdentityDiscProjectile.getImpactDamage(1.0F),
+                "a fully charged disc should deal more damage than a quick throw"
+        );
+        helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(0.0F), 3.0F, "minimum throw damage");
+        helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(1.0F), 9.0F, "maximum throw damage");
         helper.succeed();
     }
 }

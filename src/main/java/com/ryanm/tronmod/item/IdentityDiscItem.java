@@ -86,6 +86,7 @@ public final class IdentityDiscItem extends Item {
             thrownStack.set(ModDataComponents.DISC_IDENTITY.get(), identity.recordThrow());
         }
 
+        float chargeProgress = getChargeProgress(chargeTicks);
         float throwPower = getThrowPower(chargeTicks);
         IdentityDiscProjectile projectile = Projectile.spawnProjectileFromRotation(
                 IdentityDiscProjectile::new,
@@ -96,8 +97,8 @@ public final class IdentityDiscItem extends Item {
                 throwPower,
                 0.25F
         );
+        projectile.setChargeProgress(chargeProgress);
         projectile.setCreativeOnly(player.hasInfiniteMaterials());
-        float chargeProgress = getChargeProgress(chargeTicks);
         level.playSound(null, projectile, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 0.8F + chargeProgress * 0.3F, 1.05F + chargeProgress * 0.35F);
         player.awardStat(Stats.ITEM_USED.get(this));
         return true;

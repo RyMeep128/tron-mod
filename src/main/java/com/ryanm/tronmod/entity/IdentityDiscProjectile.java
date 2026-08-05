@@ -12,6 +12,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,13 +31,16 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     public static final int DEFAULT_RICOCHETS = 2;
     private static final int MAX_FLIGHT_TICKS = 200;
     private static final int EMBEDDED_DROP_TICKS = 1200;
-    private static final float PROJECTILE_DAMAGE = 6.0F;
+    private static final float MIN_PROJECTILE_DAMAGE = 3.0F;
+    private static final float MAX_PROJECTILE_DAMAGE = 9.0F;
     private static final double BOUNCE_SPEED_RETAINED = 0.82;
 
     private static final EntityDataAccessor<Integer> DATA_RICOCHETS =
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_EMBEDDED =
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> DATA_CHARGE =
+            SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.FLOAT);
 
     private boolean creativeOnly;
 
@@ -58,6 +62,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         super.defineSynchedData(entityData);
         entityData.define(DATA_RICOCHETS, 0);
         entityData.define(DATA_EMBEDDED, false);
+        entityData.define(DATA_CHARGE, 0.0F);
     }
 
     @Override
@@ -93,7 +98,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         }
 
         Entity target = hitResult.getEntity();
-        boolean damaged = target.hurtOrSimulate(this.damageSources().thrown(this, this.getOwner()), PROJECTILE_DAMAGE);
+        boolean damaged = target.hurtOrSimulate(this.damageSources().thrown(this, this.getOwner()), this.getImpactDamage());
         if (damaged) {
             this.updateIdentityAfterHit(!target.isAlive());
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(0.5), target.getZ(), 12, 0.25, 0.25, 0.25, 0.08);
@@ -143,6 +148,22 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
 
     public void setCreativeOnly(boolean creativeOnly) {
         this.creativeOnly = creativeOnly;
+    }
+
+    public void setChargeProgress(float chargeProgress) {
+        this.entityData.set(DATA_CHARGE, Mth.clamp(chargeProgress, 0.0F, 1.0F));
+    }
+
+    public float getChargeProgress() {
+        return this.entityData.get(DATA_CHARGE);
+    }
+
+    public float getImpactDamage() {
+        return getImpactDamage(this.getChargeProgress());
+    }
+
+    public static float getImpactDamage(float chargeProgress) {
+        return Mth.lerp(Mth.clamp(chargeProgress, 0.0F, 1.0F), MIN_PROJECTILE_DAMAGE, MAX_PROJECTILE_DAMAGE);
     }
 
     private void updateIdentityAfterBounce() {
@@ -206,6 +227,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         super.addAdditionalSaveData(output);
         output.putInt("Ricochets", this.getRicochets());
         output.putBoolean("Embedded", this.isEmbedded());
+        output.putFloat("Charge", this.getChargeProgress());
         output.putBoolean("CreativeOnly", this.creativeOnly);
     }
 
@@ -214,6 +236,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         super.readAdditionalSaveData(input);
         this.entityData.set(DATA_RICOCHETS, input.getIntOr("Ricochets", 0));
         this.entityData.set(DATA_EMBEDDED, input.getBooleanOr("Embedded", false));
+        this.entityData.set(DATA_CHARGE, input.getFloatOr("Charge", 0.0F));
         this.setNoGravity(this.isEmbedded());
         this.creativeOnly = input.getBooleanOr("CreativeOnly", false);
     }
