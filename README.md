@@ -4,7 +4,7 @@ A Tron-inspired Minecraft mod built with NeoForge.
 
 ## Development
 
-- Minecraft: 26.1
+- Minecraft: 26.1.2
 - NeoForge: 26.1.2.94
 - Java: 25
 
