@@ -1,6 +1,7 @@
 package com.ryanm.tronmod.entity;
 
 import com.ryanm.tronmod.component.DiscIdentity;
+import com.ryanm.tronmod.enchantment.ModEnchantments;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModEntities;
 import com.ryanm.tronmod.registry.ModItems;
@@ -30,10 +31,13 @@ import net.minecraft.world.phys.Vec3;
 public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     public static final int DEFAULT_RICOCHETS = 2;
     private static final int MAX_FLIGHT_TICKS = 200;
+    private static final int MAX_TOTAL_LIFETIME_TICKS = 400;
     private static final int EMBEDDED_DROP_TICKS = 1200;
     private static final float MIN_PROJECTILE_DAMAGE = 3.0F;
     private static final float MAX_PROJECTILE_DAMAGE = 9.0F;
     private static final double BOUNCE_SPEED_RETAINED = 0.82;
+    private static final int MAX_TOTAL_RICOCHETS = 8;
+    private static final double RETURN_ACCELERATION = 0.18;
 
     private static final EntityDataAccessor<Integer> DATA_RICOCHETS =
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.INT);
@@ -41,6 +45,8 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DATA_CHARGE =
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DATA_RETURNING =
+            SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.BOOLEAN);
 
     private boolean creativeOnly;
 
@@ -63,6 +69,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         entityData.define(DATA_RICOCHETS, 0);
         entityData.define(DATA_EMBEDDED, false);
         entityData.define(DATA_CHARGE, 0.0F);
+        entityData.define(DATA_RETURNING, false);
     }
 
     @Override
@@ -85,8 +92,20 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
                     this.getZ() - movement.z * 0.25,
                     0.0, 0.0, 0.0
             );
-        } else if (this.tickCount >= MAX_FLIGHT_TICKS && this.level() instanceof ServerLevel serverLevel) {
-            this.dropAndDiscard(serverLevel);
+        } else if (this.level() instanceof ServerLevel serverLevel) {
+            if (this.isReturning()) {
+                if (this.tickCount >= MAX_TOTAL_LIFETIME_TICKS) {
+                    this.dropAndDiscard(serverLevel);
+                } else {
+                    this.tickReturn();
+                }
+            } else if (this.tickCount >= MAX_FLIGHT_TICKS) {
+                if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+                    this.beginReturn();
+                } else {
+                    this.dropAndDiscard(serverLevel);
+                }
+            }
         }
     }
 
@@ -100,11 +119,20 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         Entity target = hitResult.getEntity();
         boolean damaged = target.hurtOrSimulate(this.damageSources().thrown(this, this.getOwner()), this.getImpactDamage());
         if (damaged) {
+            int impactLevel = this.getEnchantmentLevel(ModEnchantments.IMPACT);
+            if (impactLevel > 0) {
+                Vec3 knockback = this.getDeltaMovement().multiply(1.0, 0.0, 1.0).normalize().scale(impactLevel * 0.35);
+                target.push(knockback.x, 0.08 * impactLevel, knockback.z);
+            }
             this.updateIdentityAfterHit(!target.isAlive());
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(0.5), target.getZ(), 12, 0.25, 0.25, 0.25, 0.08);
             serverLevel.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_HIT, SoundSource.PLAYERS, 1.0F, 1.25F);
         }
-        this.entityData.set(DATA_RICOCHETS, DEFAULT_RICOCHETS);
+        if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+            this.beginReturn();
+        } else {
+            this.entityData.set(DATA_RICOCHETS, this.getMaximumRicochets());
+        }
         this.setDeltaMovement(this.getDeltaMovement().multiply(-0.05, 0.2, -0.05));
     }
 
@@ -115,7 +143,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             return;
         }
 
-        if (this.getRicochets() < DEFAULT_RICOCHETS) {
+        if (this.getRicochets() < this.getMaximumRicochets()) {
             this.entityData.set(DATA_RICOCHETS, this.getRicochets() + 1);
             this.updateIdentityAfterBounce();
             Direction face = hitResult.getDirection();
@@ -125,8 +153,13 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 10, 0.12, 0.12, 0.12, 0.1);
             serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.9F, 1.35F + this.getRicochets() * 0.1F);
         } else {
-            serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.TRIDENT_HIT_GROUND, SoundSource.PLAYERS, 0.9F, 1.2F);
-            this.embed(hitResult);
+            if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+                this.beginReturn();
+                this.setDeltaMovement(reflect(this.getDeltaMovement(), hitResult.getDirection(), BOUNCE_SPEED_RETAINED));
+            } else {
+                serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.TRIDENT_HIT_GROUND, SoundSource.PLAYERS, 0.9F, 1.2F);
+                this.embed(hitResult);
+            }
         }
     }
 
@@ -140,6 +173,10 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
 
     public int getRicochets() {
         return this.entityData.get(DATA_RICOCHETS);
+    }
+
+    public int getMaximumRicochets() {
+        return Math.min(MAX_TOTAL_RICOCHETS, DEFAULT_RICOCHETS + this.getEnchantmentLevel(ModEnchantments.RICOCHET));
     }
 
     public boolean isEmbedded() {
@@ -159,7 +196,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     }
 
     public float getImpactDamage() {
-        return getImpactDamage(this.getChargeProgress());
+        return getImpactDamage(this.getChargeProgress()) + this.getEnchantmentLevel(ModEnchantments.IMPACT) * 2.0F;
     }
 
     public static float getImpactDamage(float chargeProgress) {
@@ -195,6 +232,37 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         this.discard();
     }
 
+    private int getEnchantmentLevel(net.minecraft.resources.ResourceKey<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return ModEnchantments.getLevel(this.level(), this.getItem(), enchantment);
+    }
+
+    private boolean isReturning() {
+        return this.entityData.get(DATA_RETURNING);
+    }
+
+    private void beginReturn() {
+        this.entityData.set(DATA_RETURNING, true);
+        this.setNoGravity(true);
+    }
+
+    private void tickReturn() {
+        Entity owner = this.getOwner();
+        if (owner == null || !owner.isAlive()) {
+            return;
+        }
+        Vec3 target = owner.getEyePosition().subtract(this.position());
+        if (target.lengthSqr() < 2.25) {
+            if (owner instanceof Player player && (this.creativeOnly || player.getInventory().add(this.getItem().copy()))) {
+                this.playSound(SoundEvents.ITEM_PICKUP, 0.5F, 1.5F);
+                this.discard();
+            }
+            return;
+        }
+        int reboundLevel = this.getEnchantmentLevel(ModEnchantments.REBOUND);
+        double acceleration = RETURN_ACCELERATION + reboundLevel * 0.05;
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.88).add(target.normalize().scale(acceleration)));
+    }
+
     private void embed(BlockHitResult hitResult) {
         this.entityData.set(DATA_EMBEDDED, true);
         this.setNoGravity(true);
@@ -228,6 +296,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         output.putInt("Ricochets", this.getRicochets());
         output.putBoolean("Embedded", this.isEmbedded());
         output.putFloat("Charge", this.getChargeProgress());
+        output.putBoolean("Returning", this.isReturning());
         output.putBoolean("CreativeOnly", this.creativeOnly);
     }
 
@@ -237,7 +306,8 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         this.entityData.set(DATA_RICOCHETS, input.getIntOr("Ricochets", 0));
         this.entityData.set(DATA_EMBEDDED, input.getBooleanOr("Embedded", false));
         this.entityData.set(DATA_CHARGE, input.getFloatOr("Charge", 0.0F));
-        this.setNoGravity(this.isEmbedded());
+        this.entityData.set(DATA_RETURNING, input.getBooleanOr("Returning", false));
+        this.setNoGravity(this.isEmbedded() || this.isReturning());
         this.creativeOnly = input.getBooleanOr("CreativeOnly", false);
     }
 

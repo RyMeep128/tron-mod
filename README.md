@@ -10,6 +10,7 @@ A Tron-inspired Minecraft mod built with NeoForge.
 - Owner protection that prevents a bound disc from being silently rebound.
 - Melee weapon behavior with iron-tier durability and repair materials.
 - Bow-like variable side wind-up: quick tosses travel slowly and deal 3 damage, while full charges launch faster and farther and deal 9 damage, followed by two ricochets, cyan trails, and trident-style embedding/pickup.
+- Phase 4 enchantments: Rebound returns the disc, Velocity increases throw speed, Impact adds damage, and Ricochet adds extra bounces (capped at eight total).
 - Automated GameTests for identity serialization and ownership.
 
 ## Development

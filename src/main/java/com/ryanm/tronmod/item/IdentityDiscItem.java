@@ -2,6 +2,7 @@ package com.ryanm.tronmod.item;
 
 import com.ryanm.tronmod.component.DiscIdentity;
 import com.ryanm.tronmod.entity.IdentityDiscProjectile;
+import com.ryanm.tronmod.enchantment.ModEnchantments;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -87,7 +88,8 @@ public final class IdentityDiscItem extends Item {
         }
 
         float chargeProgress = getChargeProgress(chargeTicks);
-        float throwPower = getThrowPower(chargeTicks);
+        int velocityLevel = ModEnchantments.getLevel(level, thrownStack, ModEnchantments.VELOCITY);
+        float throwPower = getThrowPower(chargeTicks) * (1.0F + velocityLevel * 0.15F);
         IdentityDiscProjectile projectile = Projectile.spawnProjectileFromRotation(
                 IdentityDiscProjectile::new,
                 serverLevel,

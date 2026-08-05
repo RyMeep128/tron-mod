@@ -11,5 +11,9 @@
   "tooltip.tronmod.identity_disc.hits": "Hits: %s",
   "tooltip.tronmod.identity_disc.defeats": "Defeats: %s",
   "tooltip.tronmod.identity_disc.bounces": "Bounces: %s",
-  "tooltip.tronmod.identity_disc.id": "Disc ID: %s"
+  "tooltip.tronmod.identity_disc.id": "Disc ID: %s",
+  "enchantment.tronmod.rebound": "Rebound",
+  "enchantment.tronmod.velocity": "Velocity",
+  "enchantment.tronmod.impact": "Impact",
+  "enchantment.tronmod.ricochet": "Ricochet"
 }

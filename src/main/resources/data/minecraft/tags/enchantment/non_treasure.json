@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tronmod:rebound",
+    "tronmod:velocity",
+    "tronmod:impact",
+    "tronmod:ricochet"
+  ]
+}

@@ -70,20 +70,21 @@ Goal: let players specialize their disc without making every upgrade a simple da
 
 Potential enchantments:
 
-- [ ] **Rebound:** Makes the disc ricochet back toward its owner, adding one guided bounce per level.
-- [ ] **Velocity:** Increases projectile speed and effective range.
-- [ ] **Impact:** Increases direct-hit damage and knockback.
+- [x] **Rebound:** Makes the disc return toward its owner, tracking more aggressively per level.
+- [x] **Velocity:** Increases projectile speed and effective range.
+- [x] **Impact:** Increases direct-hit damage and knockback.
 - [ ] **Recall:** Makes the disc return sooner and track its owner more aggressively.
 - [ ] **Seeking:** Curves slightly toward a nearby valid target after a ricochet.
 - [ ] **Piercing:** Allows the disc to pass through additional entities before returning.
 - [ ] **Split Circuit:** Temporarily creates secondary visual or damaging disc paths at high cost.
 - [ ] **Disruption:** Applies a short digital debuff to targets or disables certain Grid technology.
 - [ ] **Perfect Return:** Rewards a well-timed catch with a temporary combat bonus.
+- [x] **Ricochet:** Adds one extra block bounce per level, up to the global ricochet cap.
 
 Balancing tasks:
 
 - [ ] Define mutually exclusive enchantments where combinations would be overpowered or mechanically unclear.
-- [ ] Cap total ricochets and projectile lifetime to protect server performance.
+- [x] Cap total ricochets and projectile lifetime to protect server performance.
 - [ ] Make enchantment effects clear through tooltips, particles, sound, and disc trail colors.
 - [ ] Decide whether ordinary enchanting, a custom upgrade station, or both provide disc progression.
 
