@@ -2,6 +2,15 @@
 
 A Tron-inspired Minecraft mod built with NeoForge.
 
+## Current Features
+
+- Craftable Identity Disc with iron ingots, light blue dye, and a diamond core.
+- Persistent owner UUID, owner name, creation date, unique disc ID, and combat statistics.
+- Automatic binding to the crafter, with first-use binding as a fallback.
+- Owner protection that prevents a bound disc from being silently rebound.
+- Melee weapon behavior with iron-tier durability and repair materials.
+- Automated GameTests for identity serialization and ownership.
+
 ## Development
 
 - Minecraft: 26.1.2

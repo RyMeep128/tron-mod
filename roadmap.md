@@ -27,20 +27,20 @@ This roadmap is intentionally flexible. Features may move between milestones as 
 
 Goal: obtain a personal Identity Disc, inspect its stored identity, and use it as a basic melee weapon.
 
-- [ ] Register the Identity Disc item.
-- [ ] Create a temporary item model and texture.
-- [ ] Bind a disc to the first player who uses or crafts it.
-- [ ] Store persistent player identity data on the disc, serialized with the item stack.
-- [ ] Initial stored data:
+- [x] Register the Identity Disc item.
+- [x] Create a temporary item model and texture.
+- [x] Bind a disc to the first player who uses or crafts it.
+- [x] Store persistent player identity data on the disc, serialized with the item stack.
+- [x] Initial stored data:
   - Owner UUID.
   - Owner name at the time of the last update.
   - Disc creation timestamp or world game time.
   - A unique disc ID.
   - Basic usage statistics such as throws, hits, catches, and defeats.
-- [ ] Display ownership and selected statistics in the item tooltip.
-- [ ] Prevent another player from silently overwriting a bound disc's identity.
-- [ ] Decide how lost discs can be recovered without enabling easy duplication.
-- [ ] Give the disc sensible melee damage, durability, and repair rules.
+- [x] Display ownership and selected statistics in the item tooltip.
+- [x] Prevent another player from silently overwriting a bound disc's identity.
+- [x] Decide how lost discs can be recovered without enabling easy duplication. For the first release, lost discs must be retrieved; a newly crafted replacement receives a new ID and fresh statistics rather than cloning the lost disc.
+- [x] Give the disc sensible melee damage, durability, and repair rules.
 - [ ] Test saving, loading, death, dimension travel, and multiplayer ownership.
 
 Implementation note: on modern NeoForge, structured item data components should be preferred where practical. The component data will still persist in the saved item data rather than living only in runtime memory.

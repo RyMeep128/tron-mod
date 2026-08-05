@@ -4,7 +4,6 @@ import com.ryanm.tronmod.TronMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -17,9 +16,9 @@ public final class ModCreativeTabs {
             "tron",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.tronmod.tron"))
-                    .icon(() -> Items.LIGHT_BLUE_DYE.getDefaultInstance())
+                    .icon(() -> ModItems.IDENTITY_DISC.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
-                        // Registered Tron Mod items will be added here as they are introduced.
+                        output.accept(ModItems.IDENTITY_DISC.get());
                     })
                     .build()
     );

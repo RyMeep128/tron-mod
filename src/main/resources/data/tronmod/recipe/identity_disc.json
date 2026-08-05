@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:light_blue_dye",
+    "D": "minecraft:diamond",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "CIC",
+    "IDI",
+    "CIC"
+  ],
+  "result": {
+    "id": "tronmod:identity_disc"
+  }
+}

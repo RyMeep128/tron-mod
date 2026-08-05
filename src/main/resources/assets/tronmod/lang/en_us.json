@@ -1,4 +1,14 @@
 {
   "mod.tronmod.name": "Tron Mod",
-  "itemGroup.tronmod.tron": "Tron Mod"
+  "itemGroup.tronmod.tron": "Tron Mod",
+  "item.tronmod.identity_disc": "Identity Disc",
+  "message.tronmod.disc_bound": "Identity Disc bound to %s",
+  "tooltip.tronmod.identity_disc.unbound": "Unbound Identity Disc",
+  "tooltip.tronmod.identity_disc.bind_hint": "Craft or use to bind",
+  "tooltip.tronmod.identity_disc.owner": "Owner: %s",
+  "tooltip.tronmod.identity_disc.created": "Created: %s UTC",
+  "tooltip.tronmod.identity_disc.hits": "Hits: %s",
+  "tooltip.tronmod.identity_disc.defeats": "Defeats: %s",
+  "tooltip.tronmod.identity_disc.bounces": "Bounces: %s",
+  "tooltip.tronmod.identity_disc.id": "Disc ID: %s"
 }
