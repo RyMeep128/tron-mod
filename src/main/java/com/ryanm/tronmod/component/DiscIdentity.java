@@ -40,6 +40,20 @@ public record DiscIdentity(
         );
     }
 
+    public DiscIdentity recordThrow() {
+        return new DiscIdentity(
+                ownerId, ownerName, createdAt, discId,
+                throwsCount + 1, hits, catches, defeats, bounces
+        );
+    }
+
+    public DiscIdentity recordBounce() {
+        return new DiscIdentity(
+                ownerId, ownerName, createdAt, discId,
+                throwsCount, hits, catches, defeats, bounces + 1
+        );
+    }
+
     public DiscIdentity recordDefeat() {
         return new DiscIdentity(
                 ownerId, ownerName, createdAt, discId,

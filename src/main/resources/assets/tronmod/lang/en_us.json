@@ -7,6 +7,7 @@
   "tooltip.tronmod.identity_disc.bind_hint": "Craft or use to bind",
   "tooltip.tronmod.identity_disc.owner": "Owner: %s",
   "tooltip.tronmod.identity_disc.created": "Created: %s UTC",
+  "tooltip.tronmod.identity_disc.throws": "Throws: %s",
   "tooltip.tronmod.identity_disc.hits": "Hits: %s",
   "tooltip.tronmod.identity_disc.defeats": "Defeats: %s",
   "tooltip.tronmod.identity_disc.bounces": "Bounces: %s",

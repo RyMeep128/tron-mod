@@ -49,20 +49,20 @@ Implementation note: on modern NeoForge, structured item data components should 
 
 Goal: create a reliable server-authoritative projectile that returns to its owner.
 
-- [ ] Add an Identity Disc projectile entity.
-- [ ] Throw the disc using the item's use action.
-- [ ] Temporarily remove or disable the held disc while its projectile is active.
-- [ ] Damage valid targets on impact.
-- [ ] Ricochet from blocks at least two times by default.
-- [ ] Preserve momentum while making ricochet paths readable and predictable.
-- [ ] Drop the base disc for manual recovery after impact, similar to a thrown trident.
+- [x] Add an Identity Disc projectile entity.
+- [x] Throw the disc using the item's use action.
+- [x] Temporarily remove or disable the held disc while its projectile is active.
+- [x] Damage valid targets on impact.
+- [x] Ricochet from blocks at least two times by default.
+- [x] Preserve momentum while making ricochet paths readable and predictable.
+- [x] Drop the base disc for manual recovery after impact, similar to a thrown trident.
 - [ ] With Rebound, begin returning through additional ricochets after an impact or maximum flight time.
 - [ ] Let the owner catch a returning Rebound disc automatically or with a timed input.
-- [ ] Return the exact original item stack with all identity data, enchantments, durability, and statistics intact.
-- [ ] Safely recover the disc if its projectile unloads, its owner dies, or the server restarts.
-- [ ] Add sounds and temporary particles for throwing, impacts, ricochets, and catching.
-- [ ] Synchronize projectile state and visuals in multiplayer.
-- [ ] Add GameTests for ownership, ricochet limits, returning, and data preservation.
+- [x] Return the exact original item stack with all identity data, enchantments, durability, and statistics intact.
+- [x] Safely preserve the disc stack if its projectile unloads, its owner dies, or the server restarts; force a recoverable drop after ten seconds of flight.
+- [x] Add sounds and temporary particles for throwing, impacts, and ricochets. Catching effects will arrive with Rebound.
+- [x] Synchronize projectile state and visuals in multiplayer.
+- [x] Add GameTests for ownership, ricochet limits, reflection, serialization, and data preservation. Returning tests will arrive with Rebound.
 
 ## Phase 4: Disc Enchantments and Upgrades
 

@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.ryanm.tronmod.gametest.ModGameTests;
 import com.ryanm.tronmod.registry.ModCreativeTabs;
 import com.ryanm.tronmod.registry.ModDataComponents;
+import com.ryanm.tronmod.registry.ModEntities;
 import com.ryanm.tronmod.registry.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -17,6 +18,7 @@ public final class TronMod {
 
     public TronMod(IEventBus modEventBus, ModContainer modContainer) {
         ModDataComponents.register(modEventBus);
+        ModEntities.register(modEventBus);
         ModItems.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         ModGameTests.register(modEventBus);

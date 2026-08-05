@@ -3,14 +3,17 @@ package com.ryanm.tronmod.gametest;
 import com.mojang.serialization.JsonOps;
 import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.component.DiscIdentity;
+import com.ryanm.tronmod.entity.IdentityDiscProjectile;
 import com.ryanm.tronmod.item.IdentityDiscItem;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +33,9 @@ public final class ModGameTests {
 
     public static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> IDENTITY_OWNERSHIP =
             TEST_FUNCTIONS.register("identity_ownership", () -> ModGameTests::identityOwnership);
+
+    public static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PROJECTILE_FOUNDATION =
+            TEST_FUNCTIONS.register("projectile_foundation", () -> ModGameTests::projectileFoundation);
 
     private ModGameTests() {
     }
@@ -80,6 +86,27 @@ public final class ModGameTests {
                 identity,
                 "saved and loaded disc identity"
         );
+        helper.succeed();
+    }
+
+    private static void projectileFoundation(GameTestHelper helper) {
+        ItemStack original = new ItemStack(ModItems.IDENTITY_DISC.get());
+        UUID ownerId = UUID.fromString("44444444-4444-4444-4444-444444444444");
+        IdentityDiscItem.bind(original, ownerId, "DiscThrower", 1_750_000_000_000L, UUID.randomUUID());
+        original.setDamageValue(17);
+
+        var owner = helper.makeMockPlayer(GameType.SURVIVAL);
+        IdentityDiscProjectile projectile = new IdentityDiscProjectile(helper.getLevel(), owner, original);
+        helper.assertValueEqual(projectile.getItem().getDamageValue(), 17, "projectile disc damage");
+        helper.assertValueEqual(
+                projectile.getItem().get(ModDataComponents.DISC_IDENTITY.get()),
+                original.get(ModDataComponents.DISC_IDENTITY.get()),
+                "projectile disc identity"
+        );
+
+        Vec3 reflected = IdentityDiscProjectile.reflect(new Vec3(1.0, 2.0, 3.0), Direction.WEST, 0.5);
+        helper.assertValueEqual(reflected, new Vec3(-0.5, 1.0, 1.5), "reflected disc velocity");
+        helper.assertValueEqual(IdentityDiscProjectile.DEFAULT_RICOCHETS, 2, "default ricochet count");
         helper.succeed();
     }
 }
