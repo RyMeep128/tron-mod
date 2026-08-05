@@ -107,6 +107,12 @@ public final class ModGameTests {
         Vec3 reflected = IdentityDiscProjectile.reflect(new Vec3(1.0, 2.0, 3.0), Direction.WEST, 0.5);
         helper.assertValueEqual(reflected, new Vec3(-0.5, 1.0, 1.5), "reflected disc velocity");
         helper.assertValueEqual(IdentityDiscProjectile.DEFAULT_RICOCHETS, 2, "default ricochet count");
+        helper.assertTrue(
+                IdentityDiscItem.getThrowPower(IdentityDiscItem.MIN_THROW_CHARGE_TICKS)
+                        < IdentityDiscItem.getThrowPower(IdentityDiscItem.FULL_THROW_CHARGE_TICKS),
+                "a fully charged disc should launch faster than a quick throw"
+        );
+        helper.assertValueEqual(IdentityDiscItem.getChargeProgress(IdentityDiscItem.FULL_THROW_CHARGE_TICKS), 1.0F, "full throw charge");
         helper.succeed();
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -28,8 +29,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public final class IdentityDiscItem extends Item {
-    private static final int THROW_CHARGE_TICKS = 10;
-    private static final float THROW_POWER = 2.2F;
+    public static final int MIN_THROW_CHARGE_TICKS = 5;
+    public static final int FULL_THROW_CHARGE_TICKS = 30;
+    private static final float MIN_THROW_POWER = 0.8F;
+    private static final float MAX_THROW_POWER = 3.2F;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneOffset.UTC);
 
     public IdentityDiscItem(Properties properties) {
@@ -69,7 +72,7 @@ public final class IdentityDiscItem extends Item {
             return false;
         }
         int chargeTicks = this.getUseDuration(stack, entity) - remainingTime;
-        if (chargeTicks < THROW_CHARGE_TICKS || stack.nextDamageWillBreak()) {
+        if (chargeTicks < MIN_THROW_CHARGE_TICKS || stack.nextDamageWillBreak()) {
             return false;
         }
         if (!(level instanceof ServerLevel serverLevel)) {
@@ -83,19 +86,30 @@ public final class IdentityDiscItem extends Item {
             thrownStack.set(ModDataComponents.DISC_IDENTITY.get(), identity.recordThrow());
         }
 
+        float throwPower = getThrowPower(chargeTicks);
         IdentityDiscProjectile projectile = Projectile.spawnProjectileFromRotation(
                 IdentityDiscProjectile::new,
                 serverLevel,
                 thrownStack,
                 player,
                 0.0F,
-                THROW_POWER,
+                throwPower,
                 0.25F
         );
         projectile.setCreativeOnly(player.hasInfiniteMaterials());
-        level.playSound(null, projectile, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 1.0F, 1.25F);
+        float chargeProgress = getChargeProgress(chargeTicks);
+        level.playSound(null, projectile, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 0.8F + chargeProgress * 0.3F, 1.05F + chargeProgress * 0.35F);
         player.awardStat(Stats.ITEM_USED.get(this));
         return true;
+    }
+
+    public static float getChargeProgress(float chargeTicks) {
+        float normalized = Mth.clamp(chargeTicks / FULL_THROW_CHARGE_TICKS, 0.0F, 1.0F);
+        return (normalized * normalized + normalized * 2.0F) / 3.0F;
+    }
+
+    public static float getThrowPower(float chargeTicks) {
+        return Mth.lerp(getChargeProgress(chargeTicks), MIN_THROW_POWER, MAX_THROW_POWER);
     }
 
     @Override

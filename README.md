@@ -9,7 +9,7 @@ A Tron-inspired Minecraft mod built with NeoForge.
 - Automatic binding to the crafter, with first-use binding as a fallback.
 - Owner protection that prevents a bound disc from being silently rebound.
 - Melee weapon behavior with iron-tier durability and repair materials.
-- Side-wind-up throwing with two block ricochets, impact damage, cyan particle trails, and trident-style embedding/pickup.
+- Bow-like variable side wind-up: quick tosses travel slowly and full charges launch faster and farther, followed by two ricochets, impact damage, cyan trails, and trident-style embedding/pickup.
 - Automated GameTests for identity serialization and ownership.
 
 ## Development

@@ -2,6 +2,7 @@ package com.ryanm.tronmod.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.ryanm.tronmod.item.IdentityDiscItem;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +29,7 @@ public final class IdentityDiscClientExtensions implements IClientItemExtensions
         }
 
         int side = arm == HumanoidArm.RIGHT ? 1 : -1;
-        float charge = Mth.clamp((player.getTicksUsingItem() + partialTick) / 10.0F, 0.0F, 1.0F);
+        float charge = IdentityDiscItem.getChargeProgress(player.getTicksUsingItem() + partialTick);
         float ease = charge * charge * (3.0F - 2.0F * charge);
 
         // Bring the disc in from the outer hip and cock it beside the camera for a side throw.
@@ -36,6 +37,10 @@ public final class IdentityDiscClientExtensions implements IClientItemExtensions
         poseStack.mulPose(Axis.YP.rotationDegrees(side * (72.0F - 24.0F * ease)));
         poseStack.mulPose(Axis.XP.rotationDegrees(-12.0F + 18.0F * ease));
         poseStack.mulPose(Axis.ZP.rotationDegrees(side * (-52.0F + 78.0F * ease)));
+        if (charge >= 1.0F) {
+            float pulse = Mth.sin((player.tickCount + partialTick) * 0.8F) * 0.015F;
+            poseStack.translate(side * pulse, -pulse, 0.0F);
+        }
         return true;
     }
 }
