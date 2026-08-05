@@ -55,7 +55,7 @@ public final class IdentityDiscItem extends Item {
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.TRIDENT;
+        return ItemUseAnimation.NONE;
     }
 
     @Override

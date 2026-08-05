@@ -6,12 +6,16 @@ import com.ryanm.tronmod.registry.ModEntities;
 import com.ryanm.tronmod.registry.ModItems;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,10 +29,15 @@ import net.minecraft.world.phys.Vec3;
 public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     public static final int DEFAULT_RICOCHETS = 2;
     private static final int MAX_FLIGHT_TICKS = 200;
+    private static final int EMBEDDED_DROP_TICKS = 1200;
     private static final float PROJECTILE_DAMAGE = 6.0F;
     private static final double BOUNCE_SPEED_RETAINED = 0.82;
 
-    private int ricochets;
+    private static final EntityDataAccessor<Integer> DATA_RICOCHETS =
+            SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_EMBEDDED =
+            SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.BOOLEAN);
+
     private boolean creativeOnly;
 
     public IdentityDiscProjectile(EntityType<? extends IdentityDiscProjectile> type, Level level) {
@@ -45,12 +54,24 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder entityData) {
+        super.defineSynchedData(entityData);
+        entityData.define(DATA_RICOCHETS, 0);
+        entityData.define(DATA_EMBEDDED, false);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!this.isAlive()) {
             return;
         }
-        if (this.level().isClientSide()) {
+        if (this.isEmbedded()) {
+            this.setDeltaMovement(Vec3.ZERO);
+            if (!this.level().isClientSide() && this.tickCount >= EMBEDDED_DROP_TICKS && this.level() instanceof ServerLevel serverLevel) {
+                this.dropAndDiscard(serverLevel);
+            }
+        } else if (this.level().isClientSide()) {
             Vec3 movement = this.getDeltaMovement();
             this.level().addParticle(
                     ParticleTypes.ELECTRIC_SPARK,
@@ -78,7 +99,8 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(0.5), target.getZ(), 12, 0.25, 0.25, 0.25, 0.08);
             serverLevel.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_HIT, SoundSource.PLAYERS, 1.0F, 1.25F);
         }
-        this.dropAndDiscard(serverLevel);
+        this.entityData.set(DATA_RICOCHETS, DEFAULT_RICOCHETS);
+        this.setDeltaMovement(this.getDeltaMovement().multiply(-0.05, 0.2, -0.05));
     }
 
     @Override
@@ -88,18 +110,18 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             return;
         }
 
-        if (this.ricochets < DEFAULT_RICOCHETS) {
-            this.ricochets++;
+        if (this.getRicochets() < DEFAULT_RICOCHETS) {
+            this.entityData.set(DATA_RICOCHETS, this.getRicochets() + 1);
             this.updateIdentityAfterBounce();
             Direction face = hitResult.getDirection();
             this.setDeltaMovement(reflect(this.getDeltaMovement(), face, BOUNCE_SPEED_RETAINED));
             Vec3 normal = face.getUnitVec3().scale(0.08);
             this.setPos(hitResult.getLocation().add(normal));
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 10, 0.12, 0.12, 0.12, 0.1);
-            serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.9F, 1.35F + this.ricochets * 0.1F);
+            serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.9F, 1.35F + this.getRicochets() * 0.1F);
         } else {
             serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.TRIDENT_HIT_GROUND, SoundSource.PLAYERS, 0.9F, 1.2F);
-            this.dropAndDiscard(serverLevel);
+            this.embed(hitResult);
         }
     }
 
@@ -112,7 +134,11 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     }
 
     public int getRicochets() {
-        return this.ricochets;
+        return this.entityData.get(DATA_RICOCHETS);
+    }
+
+    public boolean isEmbedded() {
+        return this.entityData.get(DATA_EMBEDDED);
     }
 
     public void setCreativeOnly(boolean creativeOnly) {
@@ -148,17 +174,47 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         this.discard();
     }
 
+    private void embed(BlockHitResult hitResult) {
+        this.entityData.set(DATA_EMBEDDED, true);
+        this.setNoGravity(true);
+        this.setDeltaMovement(Vec3.ZERO);
+        Vec3 normal = hitResult.getDirection().getUnitVec3().scale(0.035);
+        this.setPos(hitResult.getLocation().add(normal));
+    }
+
+    @Override
+    public void playerTouch(Player player) {
+        if (!(this.level() instanceof ServerLevel) || !this.isEmbedded()) {
+            return;
+        }
+        if (this.getOwner() != null && !this.ownedBy(player)) {
+            return;
+        }
+        if (this.creativeOnly || player.getInventory().add(this.getItem().copy())) {
+            this.playSound(SoundEvents.ITEM_PICKUP, 0.4F, 1.4F);
+            this.discard();
+        }
+    }
+
+    @Override
+    public boolean isPickable() {
+        return this.isEmbedded();
+    }
+
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
-        output.putInt("Ricochets", this.ricochets);
+        output.putInt("Ricochets", this.getRicochets());
+        output.putBoolean("Embedded", this.isEmbedded());
         output.putBoolean("CreativeOnly", this.creativeOnly);
     }
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
-        this.ricochets = input.getIntOr("Ricochets", 0);
+        this.entityData.set(DATA_RICOCHETS, input.getIntOr("Ricochets", 0));
+        this.entityData.set(DATA_EMBEDDED, input.getBooleanOr("Embedded", false));
+        this.setNoGravity(this.isEmbedded());
         this.creativeOnly = input.getBooleanOr("CreativeOnly", false);
     }
 
