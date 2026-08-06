@@ -152,6 +152,8 @@ Implementation status: the Grid Expanse now generates a dark circuit surface wit
 
 Downtown update: the canonical arrival has moved to `(8192, 65, 8192)` so existing Grid chunks are never replaced. A deterministic 192x192 city plan generates one chunk-local slice at a time, with a protected portal plaza, cardinal circuit boulevards, elevated bridges, and eight traversable modular towers. The accompanying 24-material Legacy building kit replaces temporary vanilla-derived visuals and reserves wide roads and bridge clearance for later vehicle work.
 
+Regional blend update: the downtown plan repeats on a 10,000-block lattice while the original `(8192, 8192)` district remains the canonical arrival. Each city fades through a broad urban fringe of increasingly sparse paving, circuitry, and ruins. Macro-regions between cities are primarily Digital Sea, Outlands, and Circuit Plains, with hazards and sanctuaries remaining uncommon accents.
+
 The world uses an authored regional layout instead of scattering every theme uniformly. The arrival area anchors a broad Central Grid. Directional outer sectors contain Circuit Plains, the Outlands, a Digital Sea, a Corrupted Expanse, and Deleted Sectors; Data Storms form narrow unstable boundaries, while ISO Sanctuaries are rare deterministic anomalies. Each currently changes generated geometry and materials: city shells, long circuit traces, escarpments, glassy water basins, unstable energy, crystalline growth, red corruption scars, or abrupt void shafts. Later structure, mob, and vehicle phases will specialize these stable regions with arenas, transit, settlements, patrols, and encounters.
 
 ## Phase 7: Identity and Player-Facing Systems

@@ -143,6 +143,15 @@ public final class ModGameTests {
         helper.assertTrue(GridDowntownPlan.isRoad(GridDowntownPlan.CENTER_X + 1, GridDowntownPlan.CENTER_Z + 40), "road must match in the neighboring chunk");
         helper.assertValueEqual(GridDowntownPlan.towerAt(GridDowntownPlan.CENTER_X - 62, GridDowntownPlan.CENTER_Z - 62), 0, "northwest tower footprint");
         helper.assertValueEqual(GridDowntownPlan.towerAt(GridDowntownPlan.CENTER_X, GridDowntownPlan.CENTER_Z), -1, "portal plaza clearance");
+        helper.assertTrue(GridDowntownPlan.contains(GridDowntownPlan.CENTER_X + GridDowntownPlan.CITY_SPACING, GridDowntownPlan.CENTER_Z), "city should repeat every 10,000 blocks");
+        helper.assertValueEqual(GridDowntownPlan.cityCenterFor(GridDowntownPlan.CENTER_X + 7_000, GridDowntownPlan.CENTER_Z).getX(), GridDowntownPlan.CENTER_X + GridDowntownPlan.CITY_SPACING, "nearest repeating city center");
+        helper.assertValueEqual(GridRegion.at(GridDowntownPlan.CENTER_X + 500, GridDowntownPlan.CENTER_Z), GridRegion.URBAN_FRINGE, "city should fade through an urban fringe");
+        int wildernessOrSea = 0;
+        for (int x = 0; x < 40; x++) for (int z = 0; z < 40; z++) {
+            GridRegion sampled = GridRegion.at(GridDowntownPlan.CENTER_X + 1_000 + x * 193, GridDowntownPlan.CENTER_Z + 1_000 + z * 193);
+            if (sampled == GridRegion.DIGITAL_SEA || sampled == GridRegion.OUTLANDS || sampled == GridRegion.CIRCUIT_PLAINS) wildernessOrSea++;
+        }
+        helper.assertTrue(wildernessOrSea >= 1_000, "most intercity space should be wilderness or Digital Sea");
 
         SimpleContainer terminal = new SimpleContainer(3);
         terminal.setItem(IdentityTerminalBlockEntity.SLOT_DISC, original.copy());

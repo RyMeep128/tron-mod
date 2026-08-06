@@ -16,6 +16,7 @@ public final class GridTerrainFeature extends Feature<NoneFeatureConfiguration> 
         if(GridDowntownPlan.contains(origin.getX(),origin.getZ())) return false;
         return switch(GridRegion.at(origin.getX(),origin.getZ())) {
             case CENTRAL_GRID -> central(context);
+            case URBAN_FRINGE -> fringe(context);
             case CIRCUIT_PLAINS -> circuit(context);
             case OUTLANDS -> outlands(context);
             case DIGITAL_SEA -> sea(context);
@@ -24,6 +25,18 @@ public final class GridTerrainFeature extends Feature<NoneFeatureConfiguration> 
             case CORRUPTED_EXPANSE -> corrupted(context);
             case DELETED_SECTOR -> deleted(context);
         };
+    }
+    private boolean fringe(FeaturePlaceContext<NoneFeatureConfiguration> c){
+        WorldGenLevel l=c.level();BlockPos o=c.origin();int distance=GridDowntownPlan.distanceToCity(o.getX(),o.getZ());
+        float urbanWeight=Math.max(0.0F,1.0F-(distance-GridDowntownPlan.RADIUS)/804.0F);
+        if(c.random().nextFloat()>urbanWeight)return c.random().nextBoolean()?outlands(c):circuit(c);
+        int radius=2+c.random().nextInt(4);
+        for(int x=-radius;x<=radius;x++)for(int z=-radius;z<=radius;z++)if(c.random().nextFloat()<0.72F)
+            l.setBlock(o.offset(x,-1,z),(x==0||z==0?ModBlocks.CYAN_LINE_TILE.get():ModBlocks.DARK_PANEL.get()).defaultBlockState(),2);
+        int height=2+c.random().nextInt(Math.max(2,2+(int)(urbanWeight*10)));
+        for(int y=0;y<height;y++)l.setBlock(o.offset(radius, y, radius),
+                (y%4==1?ModBlocks.CYAN_CIRCUIT_PANEL.get():ModBlocks.REINFORCED_PANEL.get()).defaultBlockState(),2);
+        return true;
     }
     private boolean central(FeaturePlaceContext<NoneFeatureConfiguration> c){
         WorldGenLevel l=c.level();BlockPos o=c.origin();int height=5+c.random().nextInt(12);
@@ -39,8 +52,13 @@ public final class GridTerrainFeature extends Feature<NoneFeatureConfiguration> 
         for(int x=-6;x<=6;x++) for(int z=-3;z<=3;z++) for(int y=0;y<height-Math.abs(z);y++) l.setBlock(o.offset(x,y-1,z),ModBlocks.GRID_STONE.get().defaultBlockState(),2);return true;
     }
     private boolean sea(FeaturePlaceContext<NoneFeatureConfiguration> c){
-        WorldGenLevel l=c.level();BlockPos o=c.origin();
-        for(int x=-6;x<=6;x++) for(int z=-6;z<=6;z++){l.setBlock(o.offset(x,-1,z),Blocks.BLACK_STAINED_GLASS.defaultBlockState(),2);l.setBlock(o.offset(x,0,z),Blocks.WATER.defaultBlockState(),2);}return true;
+        WorldGenLevel l=c.level();BlockPos o=c.origin();int minX=o.getX()&~15,minZ=o.getZ()&~15;
+        for(int x=minX;x<minX+16;x++)for(int z=minZ;z<minZ+16;z++){
+            BlockPos surface=new BlockPos(x,o.getY()-1,z);
+            l.setBlock(surface,ModBlocks.DARK_GRID_GLASS.get().defaultBlockState(),2);
+            l.setBlock(surface.above(),Blocks.WATER.defaultBlockState(),2);
+            l.setBlock(surface.above(2),Blocks.AIR.defaultBlockState(),2);
+        }return true;
     }
     private boolean storm(FeaturePlaceContext<NoneFeatureConfiguration> c){
         WorldGenLevel l=c.level();BlockPos o=c.origin();
