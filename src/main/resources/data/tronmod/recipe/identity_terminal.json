@@ -1,0 +1,7 @@
+{
+  "type":"minecraft:crafting_shaped",
+  "category":"misc",
+  "pattern":["BSB","RCR","BBB"],
+  "key":{"B":"minecraft:polished_blackstone","S":"tronmod:grid_shard","R":"minecraft:redstone","C":"minecraft:copper_block"},
+  "result":{"id":"tronmod:identity_terminal","count":1}
+}

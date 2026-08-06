@@ -20,6 +20,13 @@ public final class ModCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.IDENTITY_DISC.get());
                         output.accept(ModItems.GRID_ACCESS_DEVICE.get());
+                        output.accept(ModItems.IDENTITY_TERMINAL.get());
+                        output.accept(ModItems.GRID_SHARD.get());
+                        output.accept(ModItems.GRID_SHARD_ORE.get());
+                        output.accept(ModItems.REBOUND_PROTOCOL.get());
+                        output.accept(ModItems.VELOCITY_PROTOCOL.get());
+                        output.accept(ModItems.IMPACT_PROTOCOL.get());
+                        output.accept(ModItems.RICOCHET_PROTOCOL.get());
                     })
                     .build()
     );

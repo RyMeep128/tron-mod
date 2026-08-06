@@ -92,6 +92,9 @@ public final class GridAccessDeviceBlock extends Block {
             }
         }
         level.setBlockAndUpdate(floor.offset(0, 0, 2), ModBlocks.GRID_ACCESS_DEVICE.get().defaultBlockState());
+        if (level.dimension().equals(ModDimensions.GRID)) {
+            level.setBlockAndUpdate(floor.offset(2, 0, 0), ModBlocks.IDENTITY_TERMINAL.get().defaultBlockState());
+        }
         level.playSound(null, arrival, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.35F);
     }
 }

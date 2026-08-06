@@ -2,6 +2,7 @@ package com.ryanm.tronmod.registry;
 
 import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.component.DiscIdentity;
+import com.ryanm.tronmod.component.DiscPrograms;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -15,6 +16,8 @@ public final class ModDataComponents {
 
     public static final Supplier<DataComponentType<DiscIdentity>> DISC_IDENTITY =
             COMPONENTS.registerComponentType("disc_identity", builder -> builder.persistent(DiscIdentity.CODEC));
+    public static final Supplier<DataComponentType<DiscPrograms>> DISC_PROGRAMS =
+            COMPONENTS.registerComponentType("disc_programs", builder -> builder.persistent(DiscPrograms.CODEC));
 
     private ModDataComponents() {
     }

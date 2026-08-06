@@ -2,6 +2,7 @@ package com.ryanm.tronmod.registry;
 
 import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.block.GridAccessDeviceBlock;
+import com.ryanm.tronmod.block.IdentityTerminalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -20,6 +21,23 @@ public final class ModBlocks {
                     .strength(5.0F, 1200.0F)
                     .sound(SoundType.METAL)
                     .lightLevel(state -> 12)
+    );
+    public static final DeferredBlock<IdentityTerminalBlock> IDENTITY_TERMINAL = BLOCKS.registerBlock(
+            "identity_terminal",
+            IdentityTerminalBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .strength(4.0F, 8.0F)
+                    .sound(SoundType.METAL)
+                    .lightLevel(state -> 10)
+    );
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> GRID_SHARD_ORE = BLOCKS.registerSimpleBlock(
+            "grid_shard_ore",
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_CYAN)
+                    .strength(3.0F, 4.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 5)
     );
 
     private ModBlocks() {

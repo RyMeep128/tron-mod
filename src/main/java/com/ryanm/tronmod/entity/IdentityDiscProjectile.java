@@ -1,7 +1,8 @@
 package com.ryanm.tronmod.entity;
 
 import com.ryanm.tronmod.component.DiscIdentity;
-import com.ryanm.tronmod.enchantment.ModEnchantments;
+import com.ryanm.tronmod.component.DiscPrograms;
+import com.ryanm.tronmod.component.ProgramType;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModEntities;
 import com.ryanm.tronmod.registry.ModItems;
@@ -100,7 +101,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
                     this.tickReturn();
                 }
             } else if (this.tickCount >= MAX_FLIGHT_TICKS) {
-                if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+                if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
                     this.beginReturn();
                 } else {
                     this.dropAndDiscard(serverLevel);
@@ -119,7 +120,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         Entity target = hitResult.getEntity();
         boolean damaged = target.hurtOrSimulate(this.damageSources().thrown(this, this.getOwner()), this.getImpactDamage());
         if (damaged) {
-            int impactLevel = this.getEnchantmentLevel(ModEnchantments.IMPACT);
+            int impactLevel = this.getProgramLevel(ProgramType.IMPACT);
             if (impactLevel > 0) {
                 Vec3 knockback = this.getDeltaMovement().multiply(1.0, 0.0, 1.0).normalize().scale(impactLevel * 0.35);
                 target.push(knockback.x, 0.08 * impactLevel, knockback.z);
@@ -128,7 +129,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(0.5), target.getZ(), 12, 0.25, 0.25, 0.25, 0.08);
             serverLevel.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_HIT, SoundSource.PLAYERS, 1.0F, 1.25F);
         }
-        if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+        if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
             this.beginReturn();
         } else {
             this.entityData.set(DATA_RICOCHETS, this.getMaximumRicochets());
@@ -153,7 +154,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 10, 0.12, 0.12, 0.12, 0.1);
             serverLevel.playSound(null, hitResult.getBlockPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.9F, 1.35F + this.getRicochets() * 0.1F);
         } else {
-            if (this.getEnchantmentLevel(ModEnchantments.REBOUND) > 0) {
+            if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
                 this.beginReturn();
                 this.setDeltaMovement(reflect(this.getDeltaMovement(), hitResult.getDirection(), BOUNCE_SPEED_RETAINED));
             } else {
@@ -176,7 +177,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     }
 
     public int getMaximumRicochets() {
-        return Math.min(MAX_TOTAL_RICOCHETS, DEFAULT_RICOCHETS + this.getEnchantmentLevel(ModEnchantments.RICOCHET));
+        return Math.min(MAX_TOTAL_RICOCHETS, DEFAULT_RICOCHETS + this.getProgramLevel(ProgramType.RICOCHET));
     }
 
     public boolean isEmbedded() {
@@ -196,7 +197,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
     }
 
     public float getImpactDamage() {
-        return getImpactDamage(this.getChargeProgress()) + this.getEnchantmentLevel(ModEnchantments.IMPACT) * 2.0F;
+        return getImpactDamage(this.getChargeProgress()) + this.getProgramLevel(ProgramType.IMPACT) * 2.0F;
     }
 
     public static float getImpactDamage(float chargeProgress) {
@@ -232,8 +233,8 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         this.discard();
     }
 
-    private int getEnchantmentLevel(net.minecraft.resources.ResourceKey<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
-        return ModEnchantments.getLevel(this.level(), this.getItem(), enchantment);
+    private int getProgramLevel(ProgramType program) {
+        return this.getItem().getOrDefault(ModDataComponents.DISC_PROGRAMS.get(), DiscPrograms.EMPTY).level(program);
     }
 
     private boolean isReturning() {
@@ -258,7 +259,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             }
             return;
         }
-        int reboundLevel = this.getEnchantmentLevel(ModEnchantments.REBOUND);
+        int reboundLevel = this.getProgramLevel(ProgramType.REBOUND);
         double acceleration = RETURN_ACCELERATION + reboundLevel * 0.05;
         this.setDeltaMovement(this.getDeltaMovement().scale(0.88).add(target.normalize().scale(acceleration)));
     }

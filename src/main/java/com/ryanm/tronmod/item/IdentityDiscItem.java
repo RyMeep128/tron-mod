@@ -2,7 +2,8 @@ package com.ryanm.tronmod.item;
 
 import com.ryanm.tronmod.component.DiscIdentity;
 import com.ryanm.tronmod.entity.IdentityDiscProjectile;
-import com.ryanm.tronmod.enchantment.ModEnchantments;
+import com.ryanm.tronmod.component.DiscPrograms;
+import com.ryanm.tronmod.component.ProgramType;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -88,7 +89,7 @@ public final class IdentityDiscItem extends Item {
         }
 
         float chargeProgress = getChargeProgress(chargeTicks);
-        int velocityLevel = ModEnchantments.getLevel(level, thrownStack, ModEnchantments.VELOCITY);
+        int velocityLevel = thrownStack.getOrDefault(ModDataComponents.DISC_PROGRAMS.get(), DiscPrograms.EMPTY).level(ProgramType.VELOCITY);
         float throwPower = getThrowPower(chargeTicks) * (1.0F + velocityLevel * 0.15F);
         IdentityDiscProjectile projectile = Projectile.spawnProjectileFromRotation(
                 IdentityDiscProjectile::new,
@@ -165,6 +166,18 @@ public final class IdentityDiscItem extends Item {
         tooltip.accept(Component.translatable("tooltip.tronmod.identity_disc.hits", identity.hits()).withStyle(ChatFormatting.DARK_GRAY));
         tooltip.accept(Component.translatable("tooltip.tronmod.identity_disc.defeats", identity.defeats()).withStyle(ChatFormatting.DARK_GRAY));
         tooltip.accept(Component.translatable("tooltip.tronmod.identity_disc.bounces", identity.bounces()).withStyle(ChatFormatting.DARK_GRAY));
+
+        DiscPrograms programs = stack.getOrDefault(ModDataComponents.DISC_PROGRAMS.get(), DiscPrograms.EMPTY);
+        for (ProgramType program : ProgramType.values()) {
+            int level = programs.level(program);
+            if (level > 0) {
+                tooltip.accept(Component.translatable(
+                        "tooltip.tronmod.identity_disc.program",
+                        Component.translatable("program.tronmod." + program.getSerializedName()),
+                        level
+                ).withStyle(ChatFormatting.AQUA));
+            }
+        }
 
         if (flag.isAdvanced()) {
             tooltip.accept(Component.translatable("tooltip.tronmod.identity_disc.id", identity.discId()).withStyle(ChatFormatting.DARK_GRAY));

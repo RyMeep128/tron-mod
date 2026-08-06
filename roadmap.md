@@ -123,19 +123,19 @@ Goal: establish the optional route into the Grid so Program progression has an i
 
 Goal: replace magical disk enchantment with resource-driven software installation.
 
-- [ ] Remove Identity Disk Programs from enchanting-table and enchanted-book acquisition.
-- [ ] Add persistent installed-Program data to the Identity Disk.
+- [x] Remove Identity Disk Programs from enchanting-table and enchanted-book acquisition.
+- [x] Add persistent installed-Program data to the Identity Disk.
 - [ ] Add the Identity Terminal block, block entity, menu, and screen.
-- [ ] Generate Identity Terminals in appropriate Grid locations only.
-- [ ] Add a home-terminal recipe requiring Grid-sourced materials.
-- [ ] Add Protocol/blueprint items and define mob, resource, and structure sources.
+- [x] Generate the first Identity Terminal at the Grid arrival site; add terminals to later Grid structures as those structures are built.
+- [x] Add a home-terminal recipe requiring Grid-sourced materials.
+- [x] Add initial craftable Protocol items using Grid Shards; mob drops and rare structure blueprints remain future sources.
 - [ ] Implement installation, upgrading, removal, costs, validation, and multiplayer synchronization.
-- [ ] Migrate Rebound, Velocity, Impact, and Ricochet from the temporary enchantment implementation.
+- [x] Migrate Rebound, Velocity, Impact, and Ricochet from the temporary enchantment implementation.
 - [ ] Implement Recall, Seeking, Piercing, Split Circuit, Disruption, and Perfect Return as Programs.
 - [ ] Add readable terminal UI, disk tooltips, audiovisual feedback, and GameTests.
 - [ ] Define only the compatibility restrictions that are necessary for clarity, balance, or server safety.
 
-Implementation status: Rebound, Velocity, Impact, and Ricochet currently exist as ordinary data-driven enchantments. Their projectile effects are useful prototypes, but their storage and acquisition must be migrated to the Program/Identity Terminal system.
+Implementation status: Rebound, Velocity, Impact, and Ricochet now use persistent Program data and are installed with consumable Protocols and Grid Shards. The current hand-based terminal interaction is the functional prototype; the dedicated block entity, inventory menu, and terminal screen remain the next presentation and usability milestone.
 
 ## Phase 6: Grid World and Resource Loop
 
