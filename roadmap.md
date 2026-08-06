@@ -1,191 +1,208 @@
 # Tron Mod Roadmap
 
-The Identity Disc is the heart of the mod. It begins as the player's persistent digital identity, then grows into a weapon, tool, progression system, and key to entering the Grid.
+## Mod Vision
 
-This roadmap is intentionally flexible. Features may move between milestones as the core mechanics are tested.
+Tron Mod is a Tron-inspired Minecraft mod built on NeoForge. Its long-term scope includes the Grid dimension, Light Cycles, Grid-themed mobs, structures, resources, and progression.
 
-## Core Design Pillars
+The mod must feel like Minecraft first. The Grid is an optional path alongside vanilla progression, comparable to the Nether or End: rewarding and substantial, but never a replacement for the Overworld or the player's preferred way to play.
 
-- **Identity:** Every player has a personal disc that records important information about them.
-- **Skillful combat:** Throwing, catching, aiming, and ricocheting should reward practice.
-- **Meaningful progression:** Enchantments and upgrades should change how a disc behaves, not only increase its damage.
-- **The Grid:** Items, creatures, vehicles, and environments should feel like parts of one connected digital world.
-- **Multiplayer friendly:** Ownership, stored player data, projectiles, and vehicles must behave correctly on dedicated servers.
+## Design Pillars
+
+- **Identity Disk at the center:** Combat, exploration, Programs, terminals, vehicles, and access to the Grid should connect to the Identity Disk wherever that connection is useful and natural.
+- **Player freedom:** Players may rush, speedrun, grind, build, fight, or explore in any order the available resources allow.
+- **Resource-driven progression:** Better capabilities require materials, mob drops, or discovered Protocols—not skill trees, achievements, checklists, or arbitrary level gates.
+- **Technology, not magic:** Disk upgrades are Programs installed at an Identity Terminal rather than enchantments applied at an enchanting table.
+- **Minecraft-first integration:** New systems should complement crafting, exploration, structures, combat, and multiplayer instead of replacing vanilla systems.
+- **Skillful combat:** Charging, aiming, catching, and planning ricochets should reward practice.
+- **Multiplayer reliability:** Ownership, stored identity, projectiles, dimensions, terminals, and vehicles must remain server-authoritative and safe across saves.
+
+## Core Item: Identity Disk
+
+The Identity Disk is the centerpiece of the mod: a persistent digital identity, throwable weapon, tool, and interface with the Grid.
+
+Current and planned identity data includes:
+
+- Owner UUID and last known player name.
+- Unique disk ID and creation date.
+- Throws and other usage data.
+- Hits and defeated mobs or players.
+- Lifetime bounce count.
+- Installed Programs and their levels.
+- Future permissions, cosmetics, vehicle links, and Grid affiliations where appropriate.
+
+The exact original disk stack must survive throwing, returning, unloading, death, dimension travel, and server restarts without losing its identity, statistics, Programs, durability, or appearance.
+
+## Programs and Protocols
+
+Programs replace traditional enchantments completely.
+
+- A **Program** is an installed behavior or upgrade stored on an Identity Disk.
+- A **Protocol** or blueprint is an item or data source used to install or upgrade a Program.
+- Programs are installed and managed through a custom computer-like **Identity Terminal**.
+- Identity Disks must not receive Programs from enchanting tables or ordinary enchanted books.
+- Natural sources include Grid mob drops, Grid resources, and rare Protocols found in structures.
+- Installation and upgrades consume Grid materials plus other appropriate resources.
+- Stronger Program levels require rarer or larger resource costs, but never achievements, skill trees, or hard progression gates.
+- Players may combine and specialize Programs freely except where a clearly documented technical or balance conflict requires exclusivity.
+
+Planned combat Programs:
+
+- **Rebound:** Returns the disk to its owner; higher levels improve return behavior.
+- **Velocity:** Increases projectile speed and effective range.
+- **Impact:** Increases direct-hit damage and knockback.
+- **Ricochet:** Adds one block bounce per level up to the global safety cap.
+- **Recall:** Makes the disk return sooner and track its owner more aggressively.
+- **Seeking:** Curves toward a nearby valid target after a ricochet.
+- **Piercing:** Passes through additional entities before returning.
+- **Split Circuit:** Creates temporary secondary disk paths at a significant resource or combat cost.
+- **Disruption:** Applies a short digital debuff or disables compatible Grid technology.
+- **Perfect Return:** Rewards a well-timed catch with a temporary combat bonus.
+
+Programs should produce readable feedback through the disk tooltip or terminal UI, particles, sounds, and trail colors. Total ricochets, spawned projectiles, targeting work, and projectile lifetime must have server-safe caps.
+
+## Entering the Grid
+
+Grid access should begin with exploration, not automatic teleportation.
+
+- A discoverable Overworld structure contains a dormant portal or activation device.
+- The player chooses to insert or use a bound Identity Disk to activate it.
+- Crafting or first using a disk never teleports the player automatically.
+- The structure should be discoverable through normal exploration; optional clues or maps may help without becoming mandatory gates.
+- The activation rules must prevent accidental travel and clearly communicate the destination.
+- Entering without a disk, losing a disk inside, and multiplayer portal ownership need explicit, recoverable behavior.
+
+Identity Terminals naturally generate only inside the Grid. After reaching the Grid and gathering its materials, players can craft a terminal for use in the Overworld or another home base.
 
 ## Phase 1: Project Foundation
 
-- [x] Create the NeoForge project.
-- [x] Configure the `tronmod` mod ID and package.
+- [x] Create and configure the NeoForge project.
 - [x] Set up Git and the public GitHub repository.
-- [x] Confirm that the project builds.
-- [x] Establish code packages for items, entities, data components, enchantments, networking, and client rendering.
-- [x] Add a Tron-themed creative mode tab.
-- [x] Add basic development assets and localization conventions.
-- [x] Add a simple automated GameTest foundation.
+- [x] Confirm that the project builds and runs.
+- [x] Establish packages for items, entities, data, Programs, networking, and client rendering.
+- [x] Add a Tron-themed creative tab, temporary assets, localization, and GameTest foundation.
 
-## Phase 2: Identity Disc MVP
+## Phase 2: Identity Disk MVP
 
-Goal: obtain a personal Identity Disc, inspect its stored identity, and use it as a basic melee weapon.
+Goal: obtain a personal Identity Disk, inspect its identity, and use it as a melee weapon.
 
-- [x] Register the Identity Disc item.
-- [x] Create a temporary item model and texture.
-- [x] Bind a disc to the first player who uses or crafts it.
-- [x] Store persistent player identity data on the disc, serialized with the item stack.
-- [x] Initial stored data:
-  - Owner UUID.
-  - Owner name at the time of the last update.
-  - Disc creation timestamp or world game time.
-  - A unique disc ID.
-  - Basic usage statistics such as throws, hits, catches, and defeats.
-- [x] Display ownership and selected statistics in the item tooltip.
-- [x] Prevent another player from silently overwriting a bound disc's identity.
-- [x] Decide how lost discs can be recovered without enabling easy duplication. For the first release, lost discs must be retrieved; a newly crafted replacement receives a new ID and fresh statistics rather than cloning the lost disc.
-- [x] Give the disc sensible melee damage, durability, and repair rules.
-- [ ] Test saving, loading, death, dimension travel, and multiplayer ownership.
+- [x] Register the Identity Disk item, temporary model, texture, and recipe.
+- [x] Bind a crafted or first-used disk without allowing silent ownership replacement.
+- [x] Persist owner, creation, unique ID, and basic combat/usage statistics.
+- [x] Display ownership and selected statistics in the tooltip.
+- [x] Give the disk melee damage, durability, and repair behavior.
+- [x] Make replacement disks new identities rather than clones of lost disks.
+- [ ] Test saving, loading, death, dimension travel, and multiplayer ownership comprehensively.
+- [ ] Review whether placement or additional usage events should be recorded.
 
-Implementation note: on modern NeoForge, structured item data components should be preferred where practical. The component data will still persist in the saved item data rather than living only in runtime memory.
+## Phase 3: Throwable Disk Combat
 
-## Phase 3: Throwable Disc Combat
+Goal: make the disk a reliable, server-authoritative projectile with satisfying charge and ricochet mechanics.
 
-Goal: create a reliable server-authoritative projectile that returns to its owner.
+- [x] Add the projectile and remove the exact held stack while it is active.
+- [x] Add bow-like windup that controls speed, range, and damage.
+- [x] Use a side throw animation rather than the overhead trident animation.
+- [x] Damage targets, preserve momentum, and ricochet predictably from blocks.
+- [x] Give the base disk two ricochets, then embed it for owner pickup like a trident.
+- [x] Preserve identity, statistics, durability, and all stack data through a throw.
+- [x] Add recoverable timeout behavior, multiplayer synchronization, temporary effects, and GameTests.
+- [ ] Add intentional timed catching and interception rules after return behavior is finalized.
 
-- [x] Add an Identity Disc projectile entity.
-- [x] Throw the disc using the item's use action.
-- [x] Temporarily remove or disable the held disc while its projectile is active.
-- [x] Damage valid targets on impact.
-- [x] Ricochet from blocks at least two times by default.
-- [x] Preserve momentum while making ricochet paths readable and predictable.
-- [x] Embed the base disc in the block it strikes after its ricochets, then allow owner pickup like a thrown trident.
-- [ ] With Rebound, begin returning through additional ricochets after an impact or maximum flight time.
-- [ ] Let the owner catch a returning Rebound disc automatically or with a timed input.
-- [x] Return the exact original item stack with all identity data, enchantments, durability, and statistics intact.
-- [x] Safely preserve the disc stack if its projectile unloads, its owner dies, or the server restarts; force a recoverable drop after ten seconds of flight or sixty seconds embedded.
-- [x] Add sounds and temporary particles for throwing, impacts, and ricochets. Catching effects will arrive with Rebound.
-- [x] Synchronize projectile state and visuals in multiplayer.
-- [x] Add GameTests for ownership, ricochet limits, reflection, serialization, and data preservation. Returning tests will arrive with Rebound.
+## Phase 4: Grid Access Foundation
 
-## Phase 4: Disc Enchantments and Upgrades
+Goal: establish the optional route into the Grid so Program progression has an in-world source.
 
-Goal: let players specialize their disc without making every upgrade a simple damage increase.
+- [ ] Design and build the discoverable Overworld access structure.
+- [ ] Add a dormant portal or digitization device to the structure.
+- [ ] Require deliberate activation with a bound Identity Disk.
+- [ ] Add clear activation feedback and safe multiplayer behavior.
+- [ ] Create the Grid dimension type and an initial test biome/terrain palette.
+- [ ] Implement reliable two-way travel and recovery edge cases.
+- [ ] Ensure the player is never teleported merely for crafting or binding a disk.
 
-Potential enchantments:
+## Phase 5: Identity Terminal and Programs
 
-- [x] **Rebound:** Makes the disc return toward its owner, tracking more aggressively per level.
-- [x] **Velocity:** Increases projectile speed and effective range.
-- [x] **Impact:** Increases direct-hit damage and knockback.
-- [ ] **Recall:** Makes the disc return sooner and track its owner more aggressively.
-- [ ] **Seeking:** Curves slightly toward a nearby valid target after a ricochet.
-- [ ] **Piercing:** Allows the disc to pass through additional entities before returning.
-- [ ] **Split Circuit:** Temporarily creates secondary visual or damaging disc paths at high cost.
-- [ ] **Disruption:** Applies a short digital debuff to targets or disables certain Grid technology.
-- [ ] **Perfect Return:** Rewards a well-timed catch with a temporary combat bonus.
-- [x] **Ricochet:** Adds one extra block bounce per level, up to the global ricochet cap.
+Goal: replace magical disk enchantment with resource-driven software installation.
 
-Balancing tasks:
+- [ ] Remove Identity Disk Programs from enchanting-table and enchanted-book acquisition.
+- [ ] Add persistent installed-Program data to the Identity Disk.
+- [ ] Add the Identity Terminal block, block entity, menu, and screen.
+- [ ] Generate Identity Terminals in appropriate Grid locations only.
+- [ ] Add a home-terminal recipe requiring Grid-sourced materials.
+- [ ] Add Protocol/blueprint items and define mob, resource, and structure sources.
+- [ ] Implement installation, upgrading, removal, costs, validation, and multiplayer synchronization.
+- [ ] Migrate Rebound, Velocity, Impact, and Ricochet from the temporary enchantment implementation.
+- [ ] Implement Recall, Seeking, Piercing, Split Circuit, Disruption, and Perfect Return as Programs.
+- [ ] Add readable terminal UI, disk tooltips, audiovisual feedback, and GameTests.
+- [ ] Define only the compatibility restrictions that are necessary for clarity, balance, or server safety.
 
-- [ ] Define mutually exclusive enchantments where combinations would be overpowered or mechanically unclear.
-- [x] Cap total ricochets and projectile lifetime to protect server performance.
-- [ ] Make enchantment effects clear through tooltips, particles, sound, and disc trail colors.
-- [ ] Decide whether ordinary enchanting, a custom upgrade station, or both provide disc progression.
+Implementation status: Rebound, Velocity, Impact, and Ricochet currently exist as ordinary data-driven enchantments. Their projectile effects are useful prototypes, but their storage and acquisition must be migrated to the Program/Identity Terminal system.
 
-## Phase 5: Identity and Progression Systems
+## Phase 6: Grid World and Resource Loop
 
-Goal: make the information stored by the disc matter beyond flavor text.
+Goal: make the Grid an optional but rewarding Minecraft dimension that supports its own resource economy.
 
-- [ ] Add a disc inspection screen.
-- [ ] Track expanded lifetime statistics and notable achievements.
-- [ ] Unlock cosmetic disc circuits, colors, or trails through play.
-- [ ] Add configurable privacy controls for player information.
-- [ ] Allow selected player data to be restored or referenced through the disc without turning it into unrestricted inventory duplication.
-- [ ] Explore disc-based permissions for Grid doors, vehicles, terminals, and factions.
-- [ ] Add a safe rebinding or inheritance mechanic.
-- [ ] Create admin recovery tools for broken or lost ownership data.
+- [ ] Add final terrain, sky, lighting, ambient sound, and initial biomes.
+- [ ] Add Grid materials, including the resource used for Program installation and terminal crafting.
+- [ ] Add structures containing terminals, resources, lore, and rare Protocols.
+- [ ] Add hazards and rewards that encourage exploration without prescribing an order.
+- [ ] Balance renewable mob/resource sources against rare exploration finds.
+- [ ] Optimize emissive effects, structures, and high-speed travel for multiplayer.
 
-## Phase 6: Light Cycles
+## Phase 7: Identity and Player-Facing Systems
 
-Goal: introduce fast, responsive Grid vehicles after the projectile and networking foundations are stable.
+- [ ] Add a disk inspection screen.
+- [ ] Track expanded lifetime statistics and notable records without using them as progression gates.
+- [ ] Add cosmetic circuits, colors, and trails acquired through resources or discovery.
+- [ ] Add privacy controls for stored player information.
+- [ ] Explore disk-based permissions for Grid doors, vehicles, terminals, and factions.
+- [ ] Add safe rebinding/inheritance behavior and administrator recovery tools.
 
-- [ ] Add a basic rideable Light Cycle entity.
-- [ ] Summon or deploy it through a dedicated item or upgraded Identity Disc.
-- [ ] Implement acceleration, braking, turning, mounting, and dismounting.
-- [ ] Add energy walls or light trails.
-- [ ] Define collision and damage rules for trails.
-- [ ] Make trails expire predictably and efficiently.
-- [ ] Add vehicle ownership and access rules tied to Identity Discs.
+## Phase 8: Programs, Mobs, Structures, and Factions
+
+- [ ] Add a hostile security Program as the first Grid mob.
+- [ ] Add friendly, neutral, corrupted, and derezzed variants.
+- [ ] Create ranged and disk-wielding enemies.
+- [ ] Give mobs meaningful resource and Protocol drops.
+- [ ] Add settlements, terminals, patrols, arenas, and other Grid structures.
+- [ ] Add optional factions or reputation without turning them into mandatory progression gates.
+- [ ] Add elite Programs and bosses with unique rewards.
+
+## Phase 9: Light Cycles and Vehicles
+
+- [ ] Add a responsive rideable Light Cycle with acceleration, braking, turning, mounting, and dismounting.
+- [ ] Tie deployment and ownership naturally to the Identity Disk.
+- [ ] Add efficient, expiring light trails and define collision/damage rules.
 - [ ] Support multiplayer races and combat arenas.
 - [ ] Add final models, animations, sounds, and emissive textures.
+- [ ] Explore Light Jets, Recognizers, and faction-specific vehicle variants later.
 
-Possible later vehicles include Light Jets, Recognizers, and faction-specific cycle variants.
+## Phase 10: Polish and Release
 
-## Phase 7: The Grid Dimension
+- [ ] Replace temporary assets with final models, animations, textures, particles, and sounds.
+- [ ] Add accessibility options for flashes, contrast, and screen movement.
+- [ ] Add configuration for damage, ricochets, recovery, Program costs, and expensive effects.
+- [ ] Continue dedicated-server and compatibility testing.
+- [ ] Add optional advancements and an in-game guide for discovery—not hard progression gates.
+- [ ] Document installation, configuration, world generation, and server requirements.
+- [ ] Create release builds, changelogs, and a public playable release.
 
-Goal: provide a distinct digital world built around the mod's identity and vehicle systems.
+## Next Implementation Step
 
-- [ ] Define how players first access the Grid.
-- [ ] Require or strongly encourage a bound Identity Disc for safe entry.
-- [ ] Create the Grid dimension type and world-generation settings.
-- [ ] Add an initial biome with a dark landscape and luminous circuit patterns.
-- [ ] Add Grid materials, blocks, ores or energy resources, and structures.
-- [ ] Create portals, digitization terminals, or another thematic travel mechanic.
-- [ ] Decide what happens when a player enters without a disc or loses it inside the Grid.
-- [ ] Add Grid-specific hazards, weather or sky effects, ambient sound, and music hooks.
-- [ ] Optimize emissive effects, structures, and vehicle travel for multiplayer servers.
+Build Phase 4's minimal Grid access slice before replacing the prototype enchantments:
 
-## Phase 8: Programs, Mobs, and Factions
-
-Goal: populate the Grid with creatures and characters that interact with its systems.
-
-- [ ] Add a simple hostile security program as the first mob.
-- [ ] Add friendly or neutral programs.
-- [ ] Add corrupted or derezzed variants.
-- [ ] Create ranged and disc-wielding enemies.
-- [ ] Add faction reputation or allegiance tied to the player's identity.
-- [ ] Add NPC settlements, terminals, patrols, and arenas.
-- [ ] Add bosses or elite programs with unique disc upgrades.
-- [ ] Give mobs clear drops and purposes within the progression loop.
-
-## Phase 9: Content, Polish, and Release
-
-- [ ] Replace temporary art with final models, animations, textures, particles, and sounds.
-- [ ] Add accessibility options for flashes, high-contrast effects, and screen movement.
-- [ ] Add configuration for damage, ricochet count, recovery rules, and expensive visual effects.
-- [ ] Test on a dedicated server throughout development.
-- [ ] Test compatibility with common performance, recipe-viewing, and animation mods.
-- [ ] Add advancements and an in-game guide or tutorial path.
-- [ ] Document installation, configuration, and server requirements.
-- [ ] Create release builds and changelogs.
-- [ ] Publish an initial playable release.
-
-## Suggested First Playable Release: `0.1.0`
-
-The first playable version should stay focused:
-
-- One bindable Identity Disc.
-- Persistent owner identity and basic statistics.
-- Melee use.
-- Throwing and returning.
-- Two block ricochets by default.
-- Three initial enchantments: Rebound, Velocity, and Impact.
-- Basic temporary visuals and sounds.
-- Reliable single-player and dedicated-server behavior.
-
-Light Cycles, the Grid dimension, and mobs should come after this core loop is fun and technically reliable.
+1. Create a basic Grid dimension and safe two-way portal behavior.
+2. Add a temporary hand-built access structure for testing.
+3. Require deliberate Identity Disk activation.
+4. Once Grid access works, build the Identity Terminal and migrate the four prototype upgrades into Programs.
 
 ## Open Design Questions
 
-- How does a player obtain their first Identity Disc?
-It should be crafted
-- Is one canonical disc allowed per player, or can backup and specialized discs exist?
-Open ended for now
-- What player information is useful, fun, and appropriate to store?
-Username, craft date, mobs killed, number of bounces, maybe more?
-- Should the disc return automatically, require a timed catch, or support both modes?
-To start the disc should need to be picked up, like a trident, but with a enchnemnt called rebound it can rebound back to the player via a couple bounces.
-- Can a thrown disc be intercepted, stolen, or temporarily disabled by another player?
-intercepted or hit through the air could be fun, but maybe too challenging
+- Can one player own multiple specialized disks, or should one disk remain canonical?
+- Which Grid material powers terminals and Program installation, and is it renewable?
+- Are Protocols consumed during installation, or are they reusable blueprints while materials pay each cost?
+- Can installed Programs be freely removed and reused, or does changing a build consume resources?
+- What recovery path exists when a player loses a disk inside the Grid?
+- Can thrown disks be intercepted, deflected, stolen temporarily, or disabled?
 - Does durability represent physical damage, energy, or both?
-Unknown yet
-- How punishing should losing a disc be?
-Unknown yet
-- Which visual identity should lead the mod: classic Tron, Tron: Legacy, Tron: Ares, or an original blend?
-Tron legacy should lead, but a blend to make everyone happy
+- Which Minecraft structure-discovery tools should point toward a Grid access structure?
+- Visual direction: Tron: Legacy leads, with selective classic Tron, Tron: Ares, and original elements.
