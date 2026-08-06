@@ -26,6 +26,12 @@ public final class ModItems {
     public static final DeferredItem<ProtocolItem> VELOCITY_PROTOCOL = protocol("velocity_protocol", ProgramType.VELOCITY);
     public static final DeferredItem<ProtocolItem> IMPACT_PROTOCOL = protocol("impact_protocol", ProgramType.IMPACT);
     public static final DeferredItem<ProtocolItem> RICOCHET_PROTOCOL = protocol("ricochet_protocol", ProgramType.RICOCHET);
+    public static final DeferredItem<ProtocolItem> RECALL_PROTOCOL = protocol("recall_protocol", ProgramType.RECALL);
+    public static final DeferredItem<ProtocolItem> SEEKING_PROTOCOL = protocol("seeking_protocol", ProgramType.SEEKING);
+    public static final DeferredItem<ProtocolItem> PIERCING_PROTOCOL = protocol("piercing_protocol", ProgramType.PIERCING);
+    public static final DeferredItem<ProtocolItem> SPLIT_CIRCUIT_PROTOCOL = protocol("split_circuit_protocol", ProgramType.SPLIT_CIRCUIT);
+    public static final DeferredItem<ProtocolItem> DISRUPTION_PROTOCOL = protocol("disruption_protocol", ProgramType.DISRUPTION);
+    public static final DeferredItem<ProtocolItem> PERFECT_RETURN_PROTOCOL = protocol("perfect_return_protocol", ProgramType.PERFECT_RETURN);
 
     private ModItems() {
     }

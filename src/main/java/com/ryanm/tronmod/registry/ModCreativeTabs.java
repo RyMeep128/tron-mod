@@ -27,6 +27,12 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.VELOCITY_PROTOCOL.get());
                         output.accept(ModItems.IMPACT_PROTOCOL.get());
                         output.accept(ModItems.RICOCHET_PROTOCOL.get());
+                        output.accept(ModItems.RECALL_PROTOCOL.get());
+                        output.accept(ModItems.SEEKING_PROTOCOL.get());
+                        output.accept(ModItems.PIERCING_PROTOCOL.get());
+                        output.accept(ModItems.SPLIT_CIRCUIT_PROTOCOL.get());
+                        output.accept(ModItems.DISRUPTION_PROTOCOL.get());
+                        output.accept(ModItems.PERFECT_RETURN_PROTOCOL.get());
                     })
                     .build()
     );

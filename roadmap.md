@@ -125,17 +125,17 @@ Goal: replace magical disk enchantment with resource-driven software installatio
 
 - [x] Remove Identity Disk Programs from enchanting-table and enchanted-book acquisition.
 - [x] Add persistent installed-Program data to the Identity Disk.
-- [ ] Add the Identity Terminal block, block entity, menu, and screen.
+- [x] Add the Identity Terminal block, block entity, menu, and screen.
 - [x] Generate the first Identity Terminal at the Grid arrival site; add terminals to later Grid structures as those structures are built.
 - [x] Add a home-terminal recipe requiring Grid-sourced materials.
 - [x] Add initial craftable Protocol items using Grid Shards; mob drops and rare structure blueprints remain future sources.
-- [ ] Implement installation, upgrading, removal, costs, validation, and multiplayer synchronization.
+- [x] Implement installation, upgrading, removal, costs, validation, and multiplayer synchronization.
 - [x] Migrate Rebound, Velocity, Impact, and Ricochet from the temporary enchantment implementation.
-- [ ] Implement Recall, Seeking, Piercing, Split Circuit, Disruption, and Perfect Return as Programs.
-- [ ] Add readable terminal UI, disk tooltips, audiovisual feedback, and GameTests.
-- [ ] Define only the compatibility restrictions that are necessary for clarity, balance, or server safety.
+- [x] Implement Recall, Seeking, Piercing, Split Circuit, Disruption, and Perfect Return as Programs.
+- [x] Add readable terminal UI, disk tooltips, audiovisual feedback, and GameTests.
+- [x] Define only the compatibility restrictions that are necessary for clarity, balance, or server safety.
 
-Implementation status: Rebound, Velocity, Impact, and Ricochet now use persistent Program data and are installed with consumable Protocols and Grid Shards. The current hand-based terminal interaction is the functional prototype; the dedicated block entity, inventory menu, and terminal screen remain the next presentation and usability milestone.
+Implementation status: all ten initial combat Programs use persistent disk data and the server-backed Identity Terminal. Installation consumes a Protocol plus increasing Grid Shard costs; removal consumes one Grid Shard and does not return the Protocol. Seeking and Split Circuit are exclusive because both control post-impact targeting paths.
 
 ## Phase 6: Grid World and Resource Loop
 

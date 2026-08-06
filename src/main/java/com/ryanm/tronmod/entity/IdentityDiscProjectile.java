@@ -18,6 +18,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
@@ -50,6 +52,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             SynchedEntityData.defineId(IdentityDiscProjectile.class, EntityDataSerializers.BOOLEAN);
 
     private boolean creativeOnly;
+    private int piercedEntities;
 
     public IdentityDiscProjectile(EntityType<? extends IdentityDiscProjectile> type, Level level) {
         super(type, level);
@@ -100,7 +103,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
                 } else {
                     this.tickReturn();
                 }
-            } else if (this.tickCount >= MAX_FLIGHT_TICKS) {
+            } else if (this.tickCount >= MAX_FLIGHT_TICKS - this.getProgramLevel(ProgramType.RECALL) * 40) {
                 if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
                     this.beginReturn();
                 } else {
@@ -126,10 +129,28 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
                 target.push(knockback.x, 0.08 * impactLevel, knockback.z);
             }
             this.updateIdentityAfterHit(!target.isAlive());
+            int disruption = this.getProgramLevel(ProgramType.DISRUPTION);
+            if (disruption > 0 && target instanceof LivingEntity livingTarget) {
+                livingTarget.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40 + disruption * 30, disruption - 1));
+                livingTarget.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40 + disruption * 20, 0));
+            }
+            int split = this.getProgramLevel(ProgramType.SPLIT_CIRCUIT);
+            if (split > 0) {
+                serverLevel.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(4.0), candidate ->
+                                candidate != target && candidate != this.getOwner() && candidate.isAlive())
+                        .stream().limit(split).forEach(candidate -> {
+                            candidate.hurtOrSimulate(this.damageSources().thrown(this, this.getOwner()), this.getImpactDamage() * 0.4F);
+                            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, candidate.getX(), candidate.getY(0.5), candidate.getZ(), 8, 0.2, 0.2, 0.2, 0.08);
+                        });
+            }
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(0.5), target.getZ(), 12, 0.25, 0.25, 0.25, 0.08);
             serverLevel.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_HIT, SoundSource.PLAYERS, 1.0F, 1.25F);
         }
-        if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
+        int piercing = this.getProgramLevel(ProgramType.PIERCING);
+        if (this.piercedEntities < piercing) {
+            this.piercedEntities++;
+            this.setPos(this.position().add(this.getDeltaMovement().normalize().scale(0.5)));
+        } else if (this.getProgramLevel(ProgramType.REBOUND) > 0) {
             this.beginReturn();
         } else {
             this.entityData.set(DATA_RICOCHETS, this.getMaximumRicochets());
@@ -149,6 +170,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
             this.updateIdentityAfterBounce();
             Direction face = hitResult.getDirection();
             this.setDeltaMovement(reflect(this.getDeltaMovement(), face, BOUNCE_SPEED_RETAINED));
+            this.applySeeking();
             Vec3 normal = face.getUnitVec3().scale(0.08);
             this.setPos(hitResult.getLocation().add(normal));
             serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 10, 0.12, 0.12, 0.12, 0.1);
@@ -254,14 +276,32 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         Vec3 target = owner.getEyePosition().subtract(this.position());
         if (target.lengthSqr() < 2.25) {
             if (owner instanceof Player player && (this.creativeOnly || player.getInventory().add(this.getItem().copy()))) {
+                int perfectReturn = this.getProgramLevel(ProgramType.PERFECT_RETURN);
+                if (perfectReturn > 0) {
+                    player.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 60 + perfectReturn * 40, perfectReturn - 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.SPEED, 60 + perfectReturn * 40, 0));
+                }
                 this.playSound(SoundEvents.ITEM_PICKUP, 0.5F, 1.5F);
                 this.discard();
             }
             return;
         }
         int reboundLevel = this.getProgramLevel(ProgramType.REBOUND);
-        double acceleration = RETURN_ACCELERATION + reboundLevel * 0.05;
+        double acceleration = RETURN_ACCELERATION + reboundLevel * 0.05 + this.getProgramLevel(ProgramType.RECALL) * 0.06;
         this.setDeltaMovement(this.getDeltaMovement().scale(0.88).add(target.normalize().scale(acceleration)));
+    }
+
+    private void applySeeking() {
+        int seeking = this.getProgramLevel(ProgramType.SEEKING);
+        if (seeking <= 0 || !(this.level() instanceof ServerLevel serverLevel)) return;
+        LivingEntity target = serverLevel.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(5.0 + seeking * 3.0), candidate ->
+                        candidate != this.getOwner() && candidate.isAlive())
+                .stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+        if (target != null) {
+            Vec3 velocity = this.getDeltaMovement();
+            Vec3 guided = target.getEyePosition().subtract(this.position()).normalize().scale(velocity.length());
+            this.setDeltaMovement(velocity.lerp(guided, 0.15 * seeking));
+        }
     }
 
     private void embed(BlockHitResult hitResult) {
@@ -299,6 +339,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         output.putFloat("Charge", this.getChargeProgress());
         output.putBoolean("Returning", this.isReturning());
         output.putBoolean("CreativeOnly", this.creativeOnly);
+        output.putInt("PiercedEntities", this.piercedEntities);
     }
 
     @Override
@@ -310,6 +351,7 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
         this.entityData.set(DATA_RETURNING, input.getBooleanOr("Returning", false));
         this.setNoGravity(this.isEmbedded() || this.isReturning());
         this.creativeOnly = input.getBooleanOr("CreativeOnly", false);
+        this.piercedEntities = input.getIntOr("PiercedEntities", 0);
     }
 
     @Override

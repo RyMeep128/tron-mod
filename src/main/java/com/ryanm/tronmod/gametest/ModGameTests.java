@@ -4,6 +4,7 @@ import com.mojang.serialization.JsonOps;
 import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.component.DiscIdentity;
 import com.ryanm.tronmod.component.DiscPrograms;
+import com.ryanm.tronmod.component.ProgramType;
 import com.ryanm.tronmod.entity.IdentityDiscProjectile;
 import com.ryanm.tronmod.item.IdentityDiscItem;
 import com.ryanm.tronmod.registry.ModDataComponents;
@@ -97,7 +98,7 @@ public final class ModGameTests {
         UUID ownerId = UUID.fromString("44444444-4444-4444-4444-444444444444");
         IdentityDiscItem.bind(original, ownerId, "DiscThrower", 1_750_000_000_000L, UUID.randomUUID());
         original.setDamageValue(17);
-        original.set(ModDataComponents.DISC_PROGRAMS.get(), new DiscPrograms(0, 0, 2, 3));
+        original.set(ModDataComponents.DISC_PROGRAMS.get(), new DiscPrograms(0, 0, 2, 3, 0, 0, 0, 0, 0, 0));
 
         var owner = helper.makeMockPlayer(GameType.SURVIVAL);
         IdentityDiscProjectile projectile = new IdentityDiscProjectile(helper.getLevel(), owner, original);
@@ -114,6 +115,9 @@ public final class ModGameTests {
         helper.assertValueEqual(projectile.getMaximumRicochets(), 5, "Ricochet III bounce count");
         projectile.setChargeProgress(1.0F);
         helper.assertValueEqual(projectile.getImpactDamage(), 13.0F, "Impact II full-charge damage");
+        DiscPrograms programTest = DiscPrograms.EMPTY.upgrade(ProgramType.SEEKING);
+        helper.assertTrue(!programTest.compatible(ProgramType.SPLIT_CIRCUIT), "Seeking and Split Circuit should conflict");
+        helper.assertValueEqual(programTest.remove(ProgramType.SEEKING).level(ProgramType.SEEKING), 0, "Program removal");
         helper.assertTrue(
                 IdentityDiscItem.getThrowPower(IdentityDiscItem.MIN_THROW_CHARGE_TICKS)
                         < IdentityDiscItem.getThrowPower(IdentityDiscItem.FULL_THROW_CHARGE_TICKS),
