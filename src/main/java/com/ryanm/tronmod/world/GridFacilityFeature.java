@@ -22,6 +22,7 @@ public final class GridFacilityFeature extends Feature<NoneFeatureConfiguration>
     @Override public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel level = context.level();
         BlockPos center = context.origin();
+        if (GridDowntownPlan.contains(center.getX(), center.getZ())) return false;
         GridRegion region=GridRegion.at(center.getX(),center.getZ());
         if(region!=GridRegion.CENTRAL_GRID&&region!=GridRegion.CIRCUIT_PLAINS&&region!=GridRegion.OUTLANDS) return false;
         while (center.getY() > level.getMinY() + 1 && level.isEmptyBlock(center.below())) center = center.below();

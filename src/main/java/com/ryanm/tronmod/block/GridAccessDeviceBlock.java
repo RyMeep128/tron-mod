@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModBlocks;
 import com.ryanm.tronmod.world.ModDimensions;
+import com.ryanm.tronmod.world.GridDowntownPlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class GridAccessDeviceBlock extends Block {
     public static final MapCodec<GridAccessDeviceBlock> CODEC = simpleCodec(GridAccessDeviceBlock::new);
-    private static final BlockPos GRID_ARRIVAL = new BlockPos(0, 65, 0);
+    private static final BlockPos GRID_ARRIVAL = GridDowntownPlan.arrival();
 
     public GridAccessDeviceBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -74,7 +75,7 @@ public final class GridAccessDeviceBlock extends Block {
                 destination,
                 arrival.getCenter(),
                 Vec3.ZERO,
-                serverPlayer.getYRot(),
+                leavingGrid ? serverPlayer.getYRot() : 180.0F,
                 serverPlayer.getXRot(),
                 TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET)
         ));
@@ -85,7 +86,7 @@ public final class GridAccessDeviceBlock extends Block {
         BlockPos floor = arrival.below();
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
-                level.setBlockAndUpdate(floor.offset(x, 0, z), Blocks.BLACK_CONCRETE.defaultBlockState());
+                level.setBlockAndUpdate(floor.offset(x, 0, z), ModBlocks.FLOOR_PANEL.get().defaultBlockState());
                 for (int y = 0; y <= 2; y++) {
                     level.setBlockAndUpdate(arrival.offset(x, y, z), Blocks.AIR.defaultBlockState());
                 }
@@ -100,14 +101,14 @@ public final class GridAccessDeviceBlock extends Block {
     }
 
     private static void buildPortalSpire(ServerLevel level, BlockPos arrival) {
-        if (level.getBlockState(arrival.offset(4, 24, 4)).is(Blocks.SEA_LANTERN)) return;
+        if (level.getBlockState(arrival.offset(4, 24, 4)).is(ModBlocks.WHITE_LIGHT_PANEL.get())) return;
         for (int x=-4;x<=4;x++) for(int z=-4;z<=4;z++) {
             boolean line=x==0||z==0;
-            level.setBlockAndUpdate(arrival.offset(x,-1,z), line?ModBlocks.CIRCUIT_TILES.get().defaultBlockState():ModBlocks.GRID_STONE.get().defaultBlockState());
+            level.setBlockAndUpdate(arrival.offset(x,-1,z), line?ModBlocks.CYAN_LINE_TILE.get().defaultBlockState():ModBlocks.POLISHED_PANEL.get().defaultBlockState());
         }
         for(int x:new int[]{-4,4}) for(int z:new int[]{-4,4}) for(int y=0;y<=24;y++) {
-            level.setBlockAndUpdate(arrival.offset(x,y,z), (y%6==0?Blocks.SEA_LANTERN:Blocks.POLISHED_BLACKSTONE).defaultBlockState());
+            level.setBlockAndUpdate(arrival.offset(x,y,z), (y%6==0?ModBlocks.WHITE_LIGHT_PANEL.get():ModBlocks.PORTAL_ALLOY.get()).defaultBlockState());
         }
-        for(int y=3;y<=36;y++) level.setBlockAndUpdate(arrival.offset(0,y,0), (y%4==0?Blocks.SEA_LANTERN:Blocks.CYAN_STAINED_GLASS).defaultBlockState());
+        for(int y=3;y<=36;y++) level.setBlockAndUpdate(arrival.offset(0,y,0), (y%4==0?ModBlocks.CYAN_LIGHT_PANEL.get():ModBlocks.CYAN_GRID_GLASS.get()).defaultBlockState());
     }
 }

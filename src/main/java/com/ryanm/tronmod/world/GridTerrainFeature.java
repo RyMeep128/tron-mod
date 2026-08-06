@@ -13,6 +13,7 @@ public final class GridTerrainFeature extends Feature<NoneFeatureConfiguration> 
     public GridTerrainFeature(Codec<NoneFeatureConfiguration> codec) { super(codec); }
     @Override public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         BlockPos origin=context.origin();
+        if(GridDowntownPlan.contains(origin.getX(),origin.getZ())) return false;
         return switch(GridRegion.at(origin.getX(),origin.getZ())) {
             case CENTRAL_GRID -> central(context);
             case CIRCUIT_PLAINS -> circuit(context);

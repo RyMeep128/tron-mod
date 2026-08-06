@@ -13,6 +13,7 @@ import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModItems;
 import com.ryanm.tronmod.registry.ModBlocks;
 import com.ryanm.tronmod.world.GridRegion;
+import com.ryanm.tronmod.world.GridDowntownPlan;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
@@ -134,10 +135,14 @@ public final class ModGameTests {
         );
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(0.0F), 3.0F, "minimum throw damage");
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(1.0F), 9.0F, "maximum throw damage");
-        helper.assertValueEqual(GridRegion.at(0, 0), GridRegion.CENTRAL_GRID, "Grid arrival region");
-        helper.assertValueEqual(GridRegion.at(2000, 200), GridRegion.DIGITAL_SEA, "eastern Digital Sea region");
-        helper.assertValueEqual(GridRegion.at(-2000, 200), GridRegion.CORRUPTED_EXPANSE, "western corrupted region");
-        helper.assertValueEqual(GridRegion.at(200, -2000), GridRegion.DELETED_SECTOR, "northern deleted region");
+        helper.assertValueEqual(GridRegion.at(GridDowntownPlan.CENTER_X, GridDowntownPlan.CENTER_Z), GridRegion.CENTRAL_GRID, "Grid arrival region");
+        helper.assertValueEqual(GridDowntownPlan.towerCount(), 8, "downtown tower count");
+        for (int tower = 0; tower < GridDowntownPlan.towerCount(); tower++) helper.assertTrue(GridDowntownPlan.towerHeight(tower) >= 80 && GridDowntownPlan.towerHeight(tower) <= 160, "downtown tower height");
+        helper.assertTrue(GridDowntownPlan.contains(GridDowntownPlan.arrival().getX(), GridDowntownPlan.arrival().getZ()), "arrival should be inside downtown");
+        helper.assertTrue(GridDowntownPlan.isRoad(GridDowntownPlan.CENTER_X - 1, GridDowntownPlan.CENTER_Z + 40), "road must continue across the center chunk boundary");
+        helper.assertTrue(GridDowntownPlan.isRoad(GridDowntownPlan.CENTER_X + 1, GridDowntownPlan.CENTER_Z + 40), "road must match in the neighboring chunk");
+        helper.assertValueEqual(GridDowntownPlan.towerAt(GridDowntownPlan.CENTER_X - 62, GridDowntownPlan.CENTER_Z - 62), 0, "northwest tower footprint");
+        helper.assertValueEqual(GridDowntownPlan.towerAt(GridDowntownPlan.CENTER_X, GridDowntownPlan.CENTER_Z), -1, "portal plaza clearance");
 
         SimpleContainer terminal = new SimpleContainer(3);
         terminal.setItem(IdentityTerminalBlockEntity.SLOT_DISC, original.copy());

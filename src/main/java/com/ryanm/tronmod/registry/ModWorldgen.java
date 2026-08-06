@@ -4,6 +4,7 @@ import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.world.GridAccessStructureFeature;
 import com.ryanm.tronmod.world.GridFacilityFeature;
 import com.ryanm.tronmod.world.GridTerrainFeature;
+import com.ryanm.tronmod.world.GridDowntownFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -23,6 +24,7 @@ public final class ModWorldgen {
             "grid_facility", () -> new GridFacilityFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, GridTerrainFeature> GRID_TERRAIN = FEATURES.register(
             "grid_terrain", () -> new GridTerrainFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, GridDowntownFeature> GRID_DOWNTOWN = FEATURES.register("grid_downtown",()->new GridDowntownFeature(NoneFeatureConfiguration.CODEC));
 
     private ModWorldgen() {
     }

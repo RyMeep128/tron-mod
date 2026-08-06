@@ -12,6 +12,8 @@ A Tron-inspired Minecraft mod built with NeoForge.
 - Bow-like variable side wind-up: quick tosses travel slowly and deal 3 damage, while full charges launch faster and farther and deal 9 damage, followed by two ricochets, cyan trails, and trident-style embedding/pickup.
 - Ten disk Programs are installed through the Identity Terminal UI. Hold a bound disk and a Protocol, then choose Install or Remove; upgrades consume increasingly more Grid Shards.
 - Rare Grid access sites now generate in the Overworld. Use a bound Identity Disk on the central device to enter the test Grid; the arrival platform includes a return device.
+- A 192x192 downtown arrival district at `(8192, 8192)` provides a portal plaza, four boulevards, bridges, and eight explorable 80-160 block towers while preserving previously generated Grid chunks.
+- A 24-material Tron: Legacy-inspired building kit includes dark architectural panels, restrained cyan/white/orange circuits and lamps, glass, roads, directional facade/conduit blocks, plus structural slabs, stairs, and walls.
 - Automated GameTests for identity serialization and ownership.
 
 ## Development
