@@ -150,6 +150,8 @@ Goal: make the Grid an optional but rewarding Minecraft dimension that supports 
 
 Implementation status: the Grid Expanse now generates a dark circuit surface with bounded terrain formations, cyan lighting, ambient audio, and sparse particles. Grid Stone, Circuit Tiles, Grid Alloy, Grid Shard veins, and costly renewable Energy Fields form the initial economy. Rare facilities contain terminals, resource caches, and weighted Protocol loot, while unstable energy patches provide an avoidable environmental hazard. Feature counts, facility rarity, particles, and generated volumes are deliberately capped for multiplayer safety.
 
+The world uses an authored regional layout instead of scattering every theme uniformly. The arrival area anchors a broad Central Grid. Directional outer sectors contain Circuit Plains, the Outlands, a Digital Sea, a Corrupted Expanse, and Deleted Sectors; Data Storms form narrow unstable boundaries, while ISO Sanctuaries are rare deterministic anomalies. Each currently changes generated geometry and materials: city shells, long circuit traces, escarpments, glassy water basins, unstable energy, crystalline growth, red corruption scars, or abrupt void shafts. Later structure, mob, and vehicle phases will specialize these stable regions with arenas, transit, settlements, patrols, and encounters.
+
 ## Phase 7: Identity and Player-Facing Systems
 
 - [ ] Add a disk inspection screen.

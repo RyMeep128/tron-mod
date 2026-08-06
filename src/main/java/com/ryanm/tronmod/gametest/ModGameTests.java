@@ -12,6 +12,7 @@ import com.ryanm.tronmod.item.IdentityDiscItem;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModItems;
 import com.ryanm.tronmod.registry.ModBlocks;
+import com.ryanm.tronmod.world.GridRegion;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
@@ -133,6 +134,10 @@ public final class ModGameTests {
         );
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(0.0F), 3.0F, "minimum throw damage");
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(1.0F), 9.0F, "maximum throw damage");
+        helper.assertValueEqual(GridRegion.at(0, 0), GridRegion.CENTRAL_GRID, "Grid arrival region");
+        helper.assertValueEqual(GridRegion.at(2000, 200), GridRegion.DIGITAL_SEA, "eastern Digital Sea region");
+        helper.assertValueEqual(GridRegion.at(-2000, 200), GridRegion.CORRUPTED_EXPANSE, "western corrupted region");
+        helper.assertValueEqual(GridRegion.at(200, -2000), GridRegion.DELETED_SECTOR, "northern deleted region");
 
         SimpleContainer terminal = new SimpleContainer(3);
         terminal.setItem(IdentityTerminalBlockEntity.SLOT_DISC, original.copy());

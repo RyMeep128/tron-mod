@@ -94,7 +94,20 @@ public final class GridAccessDeviceBlock extends Block {
         level.setBlockAndUpdate(floor.offset(0, 0, 2), ModBlocks.GRID_ACCESS_DEVICE.get().defaultBlockState());
         if (level.dimension().equals(ModDimensions.GRID)) {
             level.setBlockAndUpdate(floor.offset(2, 0, 0), ModBlocks.IDENTITY_TERMINAL.get().defaultBlockState());
+            buildPortalSpire(level, arrival);
         }
         level.playSound(null, arrival, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.35F);
+    }
+
+    private static void buildPortalSpire(ServerLevel level, BlockPos arrival) {
+        if (level.getBlockState(arrival.offset(4, 24, 4)).is(Blocks.SEA_LANTERN)) return;
+        for (int x=-4;x<=4;x++) for(int z=-4;z<=4;z++) {
+            boolean line=x==0||z==0;
+            level.setBlockAndUpdate(arrival.offset(x,-1,z), line?ModBlocks.CIRCUIT_TILES.get().defaultBlockState():ModBlocks.GRID_STONE.get().defaultBlockState());
+        }
+        for(int x:new int[]{-4,4}) for(int z:new int[]{-4,4}) for(int y=0;y<=24;y++) {
+            level.setBlockAndUpdate(arrival.offset(x,y,z), (y%6==0?Blocks.SEA_LANTERN:Blocks.POLISHED_BLACKSTONE).defaultBlockState());
+        }
+        for(int y=3;y<=36;y++) level.setBlockAndUpdate(arrival.offset(0,y,0), (y%4==0?Blocks.SEA_LANTERN:Blocks.CYAN_STAINED_GLASS).defaultBlockState());
     }
 }
