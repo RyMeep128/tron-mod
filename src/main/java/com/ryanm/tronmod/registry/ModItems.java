@@ -15,6 +15,7 @@ public final class ModItems {
             IdentityDiscItem::new,
             properties -> properties.sword(ToolMaterial.IRON, 2.0F, -2.2F)
     );
+    public static final DeferredItem<?> GRID_ACCESS_DEVICE = ITEMS.registerSimpleBlockItem(ModBlocks.GRID_ACCESS_DEVICE);
 
     private ModItems() {
     }

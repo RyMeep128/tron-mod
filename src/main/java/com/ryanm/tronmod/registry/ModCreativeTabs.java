@@ -19,6 +19,7 @@ public final class ModCreativeTabs {
                     .icon(() -> ModItems.IDENTITY_DISC.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.IDENTITY_DISC.get());
+                        output.accept(ModItems.GRID_ACCESS_DEVICE.get());
                     })
                     .build()
     );

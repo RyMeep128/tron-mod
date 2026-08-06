@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "tronmod:block/grid_access_device" }
+  }
+}

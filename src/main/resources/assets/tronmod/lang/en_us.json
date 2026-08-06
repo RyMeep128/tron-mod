@@ -15,5 +15,8 @@
   "enchantment.tronmod.rebound": "Rebound",
   "enchantment.tronmod.velocity": "Velocity",
   "enchantment.tronmod.impact": "Impact",
-  "enchantment.tronmod.ricochet": "Ricochet"
+  "enchantment.tronmod.ricochet": "Ricochet",
+  "block.tronmod.grid_access_device": "Grid Access Device",
+  "message.tronmod.grid.requires_bound_disk": "A bound Identity Disk is required",
+  "message.tronmod.grid.unavailable": "The Grid is unavailable in this world"
 }

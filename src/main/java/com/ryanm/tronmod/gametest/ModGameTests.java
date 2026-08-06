@@ -8,6 +8,7 @@ import com.ryanm.tronmod.enchantment.ModEnchantments;
 import com.ryanm.tronmod.item.IdentityDiscItem;
 import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModItems;
+import com.ryanm.tronmod.registry.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -93,6 +94,7 @@ public final class ModGameTests {
     }
 
     private static void projectileFoundation(GameTestHelper helper) {
+        helper.assertTrue(ModBlocks.GRID_ACCESS_DEVICE.isBound(), "Grid access device should be registered");
         ItemStack original = new ItemStack(ModItems.IDENTITY_DISC.get());
         UUID ownerId = UUID.fromString("44444444-4444-4444-4444-444444444444");
         IdentityDiscItem.bind(original, ownerId, "DiscThrower", 1_750_000_000_000L, UUID.randomUUID());

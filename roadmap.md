@@ -111,13 +111,13 @@ Goal: make the disk a reliable, server-authoritative projectile with satisfying 
 
 Goal: establish the optional route into the Grid so Program progression has an in-world source.
 
-- [ ] Design and build the discoverable Overworld access structure.
-- [ ] Add a dormant portal or digitization device to the structure.
-- [ ] Require deliberate activation with a bound Identity Disk.
-- [ ] Add clear activation feedback and safe multiplayer behavior.
-- [ ] Create the Grid dimension type and an initial test biome/terrain palette.
-- [ ] Implement reliable two-way travel and recovery edge cases.
-- [ ] Ensure the player is never teleported merely for crafting or binding a disk.
+- [x] Design and build the discoverable Overworld access structure.
+- [x] Add a dormant portal or digitization device to the structure.
+- [x] Require deliberate activation with a bound Identity Disk.
+- [x] Add clear activation feedback and safe multiplayer behavior.
+- [x] Create the Grid dimension type and an initial test biome/terrain palette.
+- [x] Implement safe two-way travel with generated arrival platforms and return devices.
+- [x] Ensure the player is never teleported merely for crafting or binding a disk.
 
 ## Phase 5: Identity Terminal and Programs
 
@@ -190,10 +190,10 @@ Goal: make the Grid an optional but rewarding Minecraft dimension that supports 
 
 Build Phase 4's minimal Grid access slice before replacing the prototype enchantments:
 
-1. Create a basic Grid dimension and safe two-way portal behavior.
-2. Add a temporary hand-built access structure for testing.
-3. Require deliberate Identity Disk activation.
-4. Once Grid access works, build the Identity Terminal and migrate the four prototype upgrades into Programs.
+1. Build the Identity Terminal block, storage, menu, and initial screen.
+2. Add persistent Program data to Identity Disks.
+3. Migrate Rebound, Velocity, Impact, and Ricochet away from enchantments.
+4. Introduce the first Grid material and require it for a home-terminal recipe.
 
 ## Open Design Questions
 

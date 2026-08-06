@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "tronmod:grid_access_structure",
+  "step": "surface_structures"
+}
