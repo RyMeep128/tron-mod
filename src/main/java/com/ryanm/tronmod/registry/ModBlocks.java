@@ -3,6 +3,7 @@ package com.ryanm.tronmod.registry;
 import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.block.GridAccessDeviceBlock;
 import com.ryanm.tronmod.block.IdentityTerminalBlock;
+import com.ryanm.tronmod.block.GridEnergyFieldBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -39,6 +40,13 @@ public final class ModBlocks {
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 5)
     );
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> GRID_STONE = BLOCKS.registerSimpleBlock(
+            "grid_stone", () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(2.2F, 6.0F).sound(SoundType.DEEPSLATE));
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> CIRCUIT_TILES = BLOCKS.registerSimpleBlock(
+            "circuit_tiles", () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(2.5F, 8.0F).sound(SoundType.METAL).lightLevel(state -> 8));
+    public static final DeferredBlock<GridEnergyFieldBlock> GRID_ENERGY_FIELD = BLOCKS.registerBlock(
+            "grid_energy_field", GridEnergyFieldBlock::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_MAGENTA).strength(1.0F, 3.0F).sound(SoundType.GLASS).lightLevel(state -> 14).noOcclusion().noCollision());
 
     private ModBlocks() {
     }

@@ -23,6 +23,10 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.IDENTITY_TERMINAL.get());
                         output.accept(ModItems.GRID_SHARD.get());
                         output.accept(ModItems.GRID_SHARD_ORE.get());
+                        output.accept(ModItems.GRID_STONE.get());
+                        output.accept(ModItems.CIRCUIT_TILES.get());
+                        output.accept(ModItems.GRID_ENERGY_FIELD.get());
+                        output.accept(ModItems.GRID_ALLOY.get());
                         output.accept(ModItems.REBOUND_PROTOCOL.get());
                         output.accept(ModItems.VELOCITY_PROTOCOL.get());
                         output.accept(ModItems.IMPACT_PROTOCOL.get());

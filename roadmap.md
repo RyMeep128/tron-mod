@@ -141,12 +141,14 @@ Implementation status: all ten initial combat Programs use persistent disk data 
 
 Goal: make the Grid an optional but rewarding Minecraft dimension that supports its own resource economy.
 
-- [ ] Add final terrain, sky, lighting, ambient sound, and initial biomes.
-- [ ] Add Grid materials, including the resource used for Program installation and terminal crafting.
-- [ ] Add structures containing terminals, resources, lore, and rare Protocols.
-- [ ] Add hazards and rewards that encourage exploration without prescribing an order.
-- [ ] Balance renewable mob/resource sources against rare exploration finds.
-- [ ] Optimize emissive effects, structures, and high-speed travel for multiplayer.
+- [x] Add final terrain, sky, lighting, ambient sound, and initial biomes.
+- [x] Add Grid materials, including the resource used for Program installation and terminal crafting.
+- [x] Add structures containing terminals, resources, lore, and rare Protocols.
+- [x] Add hazards and rewards that encourage exploration without prescribing an order.
+- [x] Balance renewable mob/resource sources against rare exploration finds.
+- [x] Optimize emissive effects, structures, and high-speed travel for multiplayer.
+
+Implementation status: the Grid Expanse now generates a dark circuit surface with bounded terrain formations, cyan lighting, ambient audio, and sparse particles. Grid Stone, Circuit Tiles, Grid Alloy, Grid Shard veins, and costly renewable Energy Fields form the initial economy. Rare facilities contain terminals, resource caches, and weighted Protocol loot, while unstable energy patches provide an avoidable environmental hazard. Feature counts, facility rarity, particles, and generated volumes are deliberately capped for multiplayer safety.
 
 ## Phase 7: Identity and Player-Facing Systems
 

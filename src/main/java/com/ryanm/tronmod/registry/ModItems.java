@@ -22,6 +22,10 @@ public final class ModItems {
     public static final DeferredItem<?> IDENTITY_TERMINAL = ITEMS.registerSimpleBlockItem(ModBlocks.IDENTITY_TERMINAL);
     public static final DeferredItem<Item> GRID_SHARD = ITEMS.registerSimpleItem("grid_shard");
     public static final DeferredItem<?> GRID_SHARD_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.GRID_SHARD_ORE);
+    public static final DeferredItem<?> GRID_STONE = ITEMS.registerSimpleBlockItem(ModBlocks.GRID_STONE);
+    public static final DeferredItem<?> CIRCUIT_TILES = ITEMS.registerSimpleBlockItem(ModBlocks.CIRCUIT_TILES);
+    public static final DeferredItem<?> GRID_ENERGY_FIELD = ITEMS.registerSimpleBlockItem(ModBlocks.GRID_ENERGY_FIELD);
+    public static final DeferredItem<Item> GRID_ALLOY = ITEMS.registerSimpleItem("grid_alloy");
     public static final DeferredItem<ProtocolItem> REBOUND_PROTOCOL = protocol("rebound_protocol", ProgramType.REBOUND);
     public static final DeferredItem<ProtocolItem> VELOCITY_PROTOCOL = protocol("velocity_protocol", ProgramType.VELOCITY);
     public static final DeferredItem<ProtocolItem> IMPACT_PROTOCOL = protocol("impact_protocol", ProgramType.IMPACT);

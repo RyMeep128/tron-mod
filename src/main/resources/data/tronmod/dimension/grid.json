@@ -3,12 +3,13 @@
   "generator": {
     "type": "minecraft:flat",
     "settings": {
-      "biome": "minecraft:the_void",
-      "features": false,
+      "biome": "tronmod:grid_expanse",
+      "features": true,
       "lakes": false,
       "layers": [
         { "block": "minecraft:bedrock", "height": 1 },
-        { "block": "minecraft:black_concrete", "height": 63 }
+        { "block": "tronmod:grid_stone", "height": 58 },
+        { "block": "tronmod:circuit_tiles", "height": 1 }
       ],
       "structure_overrides": []
     }
