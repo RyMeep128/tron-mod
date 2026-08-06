@@ -5,6 +5,8 @@ import com.ryanm.tronmod.TronMod;
 import com.ryanm.tronmod.component.DiscIdentity;
 import com.ryanm.tronmod.component.DiscPrograms;
 import com.ryanm.tronmod.component.ProgramType;
+import com.ryanm.tronmod.block.IdentityTerminalBlock;
+import com.ryanm.tronmod.block.entity.IdentityTerminalBlockEntity;
 import com.ryanm.tronmod.entity.IdentityDiscProjectile;
 import com.ryanm.tronmod.item.IdentityDiscItem;
 import com.ryanm.tronmod.registry.ModDataComponents;
@@ -15,6 +17,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
@@ -130,6 +133,15 @@ public final class ModGameTests {
         );
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(0.0F), 3.0F, "minimum throw damage");
         helper.assertValueEqual(IdentityDiscProjectile.getImpactDamage(1.0F), 9.0F, "maximum throw damage");
+
+        SimpleContainer terminal = new SimpleContainer(3);
+        terminal.setItem(IdentityTerminalBlockEntity.SLOT_DISC, original.copy());
+        terminal.setItem(IdentityTerminalBlockEntity.SLOT_PROTOCOL, new ItemStack(ModItems.REBOUND_PROTOCOL.get()));
+        owner.getInventory().add(new ItemStack(ModItems.GRID_SHARD.get()));
+        helper.assertTrue(IdentityTerminalBlock.runProgramAction(owner, helper.getLevel(), helper.absolutePos(net.minecraft.core.BlockPos.ZERO), terminal, false), "terminal should process valid inputs");
+        helper.assertTrue(terminal.getItem(IdentityTerminalBlockEntity.SLOT_DISC).isEmpty(), "terminal should consume the disc input");
+        helper.assertTrue(terminal.getItem(IdentityTerminalBlockEntity.SLOT_PROTOCOL).isEmpty(), "terminal should consume the protocol input");
+        helper.assertValueEqual(terminal.getItem(IdentityTerminalBlockEntity.SLOT_OUTPUT).getOrDefault(ModDataComponents.DISC_PROGRAMS.get(), DiscPrograms.EMPTY).level(ProgramType.REBOUND), 1, "terminal output program level");
         helper.succeed();
     }
 }

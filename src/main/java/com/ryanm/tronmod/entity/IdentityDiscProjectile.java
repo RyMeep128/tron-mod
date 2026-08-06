@@ -7,6 +7,7 @@ import com.ryanm.tronmod.registry.ModDataComponents;
 import com.ryanm.tronmod.registry.ModEntities;
 import com.ryanm.tronmod.registry.ModItems;
 import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -78,6 +79,9 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
 
     @Override
     public void tick() {
+        if (!this.level().isClientSide() && !this.isEmbedded() && !this.isReturning() && this.bounceFromUnloadedChunk()) {
+            // Reflect before vanilla movement can carry the entity into a chunk that will stop ticking it.
+        }
         super.tick();
         if (!this.isAlive()) {
             return;
@@ -111,6 +115,33 @@ public final class IdentityDiscProjectile extends ThrowableItemProjectile {
                 }
             }
         }
+    }
+
+    private boolean bounceFromUnloadedChunk() {
+        Vec3 movement = this.getDeltaMovement();
+        if (movement.lengthSqr() < 1.0E-6) return false;
+        BlockPos current = this.blockPosition();
+        BlockPos next = BlockPos.containing(this.position().add(movement));
+        if (this.level().isLoaded(next)) return false;
+
+        boolean crossedX = (current.getX() >> 4) != (next.getX() >> 4);
+        boolean crossedZ = (current.getZ() >> 4) != (next.getZ() >> 4);
+        double x = crossedX ? -movement.x : movement.x;
+        double z = crossedZ ? -movement.z : movement.z;
+        if (!crossedX && !crossedZ) {
+            x = -movement.x;
+            z = -movement.z;
+        }
+        this.setDeltaMovement(new Vec3(x, movement.y, z).scale(BOUNCE_SPEED_RETAINED));
+        if (this.getRicochets() < this.getMaximumRicochets()) {
+            this.entityData.set(DATA_RICOCHETS, this.getRicochets() + 1);
+            this.updateIdentityAfterBounce();
+        }
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 12, 0.2, 0.2, 0.2, 0.1);
+            serverLevel.playSound(null, this.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.9F, 1.1F);
+        }
+        return true;
     }
 
     @Override
